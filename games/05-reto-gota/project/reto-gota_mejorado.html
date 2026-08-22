@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RETO GOTA - Salva el Agua</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    min-height:100vh;
+    background:
+        radial-gradient(circle at top,#48cae4,#0077b6 55%,#023e5a);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#073b4c;
+}
+
+#game{
+    width:min(1100px,96vw);
+    height:min(750px,95vh);
+    background:#eafcff;
+    border-radius:24px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 25px 70px rgba(0,0,0,.45);
+}
+
+/* =========================
+   PANTALLAS
+========================= */
+
+.screen{
+    position:absolute;
+    inset:0;
+    z-index:1000;
+    background:rgba(2,30,50,.94);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.panel{
+    width:min(720px,95%);
+    max-height: 90vh;
+    overflow-y: auto;
+    background:white;
+    border-radius:25px;
+    padding:30px 40px;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+
+.drop{
+    font-size:65px;
+}
+
+.panel h1{
+    font-size:clamp(36px,6vw,60px);
+    color:#0077b6;
+    text-shadow:3px 3px #90e0ef;
+    margin:5px 0;
+}
+
+.panel h2{
+    color:#023e8a;
+    margin-bottom:15px;
+}
+
+.panel p{
+    font-size:17px;
+    line-height:1.5;
+    margin:8px 0;
+}
+
+.panel button{
+    margin-top:15px;
+}
+
+button{
+    border:0;
+    border-radius:14px;
+    padding:14px 30px;
+    background:linear-gradient(135deg,#0077b6,#00b4d8);
+    color:white;
+    font-weight:bold;
+    font-size:18px;
+    cursor:pointer;
+    box-shadow:0 5px #005577;
+    transition: transform .1s, background .2s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+button:active{
+    transform:translateY(2px);
+    box-shadow:0 2px #005577;
+}
+
+/* =========================
+   PERFIL DE JUGADOR & REDES
+========================= */
+
+.profileCard{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+    border: 3px solid #009688;
+    border-radius: 20px;
+    padding: 15px 20px;
+    margin: 15px 0;
+    box-shadow: inset 0 2px 5px rgba(255,255,255,0.8), 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.avatarCircle{
+    width: 70px;
+    height: 70px;
+    background: #0077b6;
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.profileInfo{
+    text-align: left;
+}
+
+.profileName{
+    font-size: 20px;
+    color: #023e8a;
+    font-weight: bold;
+}
+
+.profileBadge{
+    display: inline-block;
+    background: #0077b6;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-top: 3px;
+}
+
+.profileMeta{
+    font-size: 13px;
+    color: #455a64;
+    margin-top: 4px !important;
+}
+
+.shareBox{
+    margin: 15px 0;
+    padding: 12px;
+    background: #f1f8e9;
+    border-radius: 16px;
+    border: 2px dashed #7cb342;
+}
+
+.shareBox h3{
+    font-size: 15px;
+    color: #33691e;
+    margin-bottom: 10px;
+}
+
+.shareButtons{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btnShare{
+    padding: 8px 14px;
+    font-size: 13px;
+    border-radius: 10px;
+    box-shadow: 0 3px #00000033;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btnWa{ background: #25D366; }
+.btnFb{ background: #1877F2; }
+.btnX{ background: #14171A; }
+.btnCopy{ background: #607D8B; }
+
+/* =========================
+   HUD
+========================= */
+
+#hud{
+    height:85px;
+    background:#023e5a;
+    color:white;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+}
+
+.stat{
+    text-align:center;
+    min-width:120px;
+}
+
+.stat small{
+    display:block;
+    color:#90e0ef;
+    font-size:11px;
+    letter-spacing:1px;
+}
+
+.stat strong{
+    font-size:25px;
+}
+
+#score{ color:#ffe45c; }
+#saved{ color:#70e000; }
+#time{ color:#ffea00; }
+#lives{ color:#ff6b6b; }
+
+/* =========================
+   ÁREA Y MINIJUEGOS
+========================= */
+
+#gameArea{
+    height:calc(100% - 85px);
+    position:relative;
+    overflow:hidden;
+    background: linear-gradient(#c9f5ff, #eafcff);
+}
+
+#miniTitle{
+    text-align:center;
+    color:#023e8a;
+    font-size:28px;
+    font-weight:bold;
+    padding:18px 10px 5px;
+}
+
+#instruction{
+    text-align:center;
+    color:#41616d;
+    font-size:16px;
+    padding:4px 15px 10px;
+}
+
+#miniGame{
+    position:relative;
+    width:100%;
+    height:calc(100% - 105px);
+}
+
+#feedback{
+    position:absolute;
+    bottom:15px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#087f5b;
+    color:white;
+    padding:12px 25px;
+    border-radius:30px;
+    font-weight:bold;
+    opacity:0;
+    transition:.2s;
+    z-index:500;
+    pointer-events:none;
+}
+
+#feedback.show{ opacity:1; }
+
+/* ESTILOS DE ELEMENTOS DE JUEGO (Llaves, tuberías, etc.) */
+.faucet{
+    position:absolute; width:100px; height:100px; background:white;
+    border:4px solid #0077b6; border-radius:20px; display:flex;
+    align-items:center; justify-content:center; flex-direction:column;
+    cursor:pointer; box-shadow:0 6px 15px rgba(0,0,0,.2); transition:.15s; font-size:45px;
+}
+.faucet small{ font-size:11px; font-weight:bold; }
+.faucet.open{ border-color:#e63946; background:#fff0f0; }
+.faucet.closed{ border-color:#38b000; background:#efffe8; }
+
+.pipeBoard{
+    width:min(520px,90%); aspect-ratio:1; margin:auto; display:grid;
+    grid-template-columns:repeat(5,1fr); grid-template-rows:repeat(5,1fr);
+    gap:5px; background:#023e5a; padding:7px; border-radius:15px; position:relative;
+}
+.pipeCell{ background:#bdeeff; border-radius:7px; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; }
+.pipe{ width:75%; height:75%; position:relative; transition:transform .2s; }
+.pipe.straight::before{ content:""; position:absolute; left:38%; top:0; width:24%; height:100%; background:#ffb703; border-radius:10px; transition:background .2s, box-shadow .2s; }
+.pipe.corner::before{ content:""; position:absolute; left:38%; top:0; width:24%; height:62%; background:#ffb703; transition:background .2s, box-shadow .2s; }
+.pipe.corner::after{ content:""; position:absolute; left:38%; top:38%; width:62%; height:24%; background:#ffb703; border-radius:0 10px 10px 0; transition:background .2s, box-shadow .2s; }
+.pipe.flowing::before, .pipe.flowing::after{ background:#38b000; box-shadow:0 0 10px #38b000; }
+.pipeBadge{ position:absolute; font-size:22px; z-index:5; filter:drop-shadow(0 2px 2px rgba(0,0,0,.35)); }
+
+.leakPipe{ width:80%; max-width:700px; height:100px; background:#777; border:9px solid #444; border-radius:20px; margin:50px auto 20px; position:relative; }
+.leak{ width:38px; height:38px; border-radius:50%; background:#00b4d8; position:absolute; cursor:pointer; box-shadow:0 0 15px #00b4d8; animation:drip .5s infinite alternate; }
+@keyframes drip{ from{transform:translateY(0)} to{transform:translateY(12px)} }
+.waterLost{ text-align:center; font-size:22px; }
+
+.bucketScene{ width:80%; max-width:650px; margin:20px auto; height:300px; position:relative; }
+.bucket{ position:absolute; bottom:10px; left:50%; transform:translateX(-50%); width:180px; height:170px; background:linear-gradient(90deg,#777,#ddd,#777); border:6px solid #444; border-radius:0 0 35px 35px; overflow:hidden; }
+.bucketWater{ position:absolute; bottom:0; left:0; width:100%; height:0%; background:linear-gradient(#48cae4,#0077b6); transition:.1s; }
+.bucketText{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-weight:bold; font-size:22px; z-index:2; }
+.bucketTargetLine{ position:absolute; left:0; right:0; top:20%; border-top:4px dashed #38b000; z-index:3; }
+.bucketTargetLine::after{ content:"META 80%"; position:absolute; right:4px; top:3px; font-size:9px; font-weight:bold; color:#2b9348; background:white; padding:1px 4px; border-radius:4px; }
+.tap{ position:absolute; top:20px; left:50%; transform:translateX(-50%); font-size:80px; }
+
+.showerScene{ text-align:center; padding:15px; }
+.showerIcon{ font-size:130px; transition:.15s; }
+.showerIcon.running{ animation:showerShake .25s infinite; }
+@keyframes showerShake{ 0%,100%{transform:rotate(-2deg)} 50%{transform:rotate(2deg)} }
+.progressContainer{ width:70%; max-width:600px; height:35px; border:4px solid #0077b6; border-radius:30px; margin:20px auto; overflow:hidden; background:#ddd; position:relative; }
+.showerZone{ position:absolute; left:30%; width:30%; height:100%; background:#38b000; opacity:.45; z-index:1; }
+.progress{ position:relative; z-index:2; height:100%; width:0; background:linear-gradient(90deg,#00b4d8,#0077b6); }
+.showerButtons{ display:flex; justify-content:center; gap:15px; }
+
+.sealScene{ position:relative; width:80%; max-width:700px; height:300px; margin:auto; }
+.bigPipe{ position:absolute; top:110px; left:5%; right:5%; height:80px; background:#666; border:8px solid #333; border-radius:15px; }
+.hole{ position:absolute; top:130px; left:50%; transform:translateX(-50%); font-size:45px; z-index:3; }
+.holeZone{ position:absolute; top:152px; left:50%; width:140px; height:140px; transform:translate(-50%,-50%); border:3px dashed rgba(230,57,70,.65); border-radius:50%; pointer-events:none; z-index:2; }
+.patch{ position:absolute; width:80px; height:60px; background:#e9c46a; border:5px solid #9c6b00; border-radius:10px; cursor:grab; display:flex; justify-content:center; align-items:center; font-size:25px; touch-action:none; user-select:none; z-index:4; }
+
+.dropScene{ width:90%; height:330px; margin:auto; position:relative; border:4px solid #0077b6; border-radius:20px; background:#d8f7ff; overflow:hidden; }
+.drop{ position:absolute; font-size:35px; cursor:pointer; user-select:none; }
+
+.valveScene{ width:90%; max-width:650px; margin:auto; text-align:center; }
+.valve{ font-size:130px; cursor:pointer; display:inline-block; transition:transform .25s; user-select:none; }
+.valve:hover{ transform:scale(1.05) rotate(var(--valveRot,0deg)); }
+.pressure{ height:40px; width:90%; margin:20px auto; border-radius:20px; background:#dfe6e9; position:relative; border:4px solid #333; overflow:hidden; }
+.pressureZone{ position:absolute; left:40%; width:20%; height:100%; background:#38b000; opacity:.55; }
+.pressureMarker{ position:absolute; top:-10px; width:8px; height:55px; background:#111; left:50%; transition:.1s; }
+
+.plantScene{ text-align:center; padding:10px; }
+.plantRow{ display:flex; justify-content:center; gap:30px; font-size:50px; margin-bottom:15px; min-height:65px; }
+.gauge{ height:36px; width:85%; max-width:600px; margin:15px auto; border-radius:20px; background:#ddd; position:relative; border:4px solid #333; overflow:hidden; }
+.gaugeZone{ position:absolute; left:40%; width:20%; height:100%; background:#38b000; opacity:.55; }
+.gaugeMarker{ position:absolute; top:-8px; width:8px; height:52px; background:#111; left:0%; }
+
+.habitIcon{ position:absolute; width:110px; min-height:95px; background:white; border:4px solid #0077b6; border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:34px; cursor:pointer; box-shadow:0 6px 15px rgba(0,0,0,.2); text-align:center; padding:6px; }
+.habitIcon small{ font-size:10.5px; font-weight:bold; margin-top:4px; color:#023e5a; line-height:1.2; }
+
+.rainScene{ position:relative; width:90%; max-width:650px; height:300px; margin:auto; border:4px solid #0077b6; border-radius:20px; background:#dff3ff; overflow:hidden; touch-action:none; cursor:grab; }
+.rainDrop{ position:absolute; font-size:26px; pointer-events:none; }
+.rainBarrel{ position:absolute; bottom:6px; left:50%; transform:translateX(-50%); font-size:55px; pointer-events:none; }
+.rainGaugeWrap{ position:absolute; top:8px; left:8px; right:8px; height:14px; background:#ffffffaa; border-radius:10px; overflow:hidden; border:2px solid #0077b6; }
+.rainGauge{ height:100%; width:0%; background:linear-gradient(90deg,#38b000,#00b4d8); }
+
+#rankingBox{ margin-top:20px; text-align:left; }
+#rankingList{ padding-left:22px; line-height:1.7; font-size:15px; }
+.rankingHighlight{ color:#0077b6; font-weight:bold; }
+
+@media(max-width:650px){
+    #game{ width:100vw; height:100vh; border-radius:0; }
+    #hud{ height:72px; }
+    .stat{ min-width:60px; }
+    .stat small{ font-size:8px; }
+    .stat strong{ font-size:18px; }
+    #miniTitle{ font-size:21px; }
+    #instruction{ font-size:13px; }
+    .faucet{ width:75px; height:75px; font-size:32px; }
+    .pipeBoard{ width:95%; }
+    .showerIcon{ font-size:90px; }
+    .profileCard{ flex-direction: column; text-align: center; }
+    .profileInfo{ text-align: center; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+<div id="startScreen" class="screen">
+    <div class="panel">
+        <div class="drop">💧</div>
+        <h1>RETO GOTA</h1>
+        <h2>¡SALVA EL AGUA!</h2>
+        <p>Tienes <strong>60 segundos</strong>.</p>
+        <p>Completa tantos minijuegos como puedas y demuestra que sabes cuidar el agua.</p>
+        <button onclick="startGame()">COMENZAR</button>
+    </div>
+</div>
+
+<div id="endScreen" class="screen" style="display:none">
+    <div class="panel">
+        <div class="drop">🏆</div>
+        <h1>¡FIN!</h1>
+        <h2 id="resultTitle"></h2>
+
+        <div class="profileCard">
+            <div class="avatarCircle">🧑‍🌾</div>
+            <div class="profileInfo">
+                <div class="profileName">EcoGuardián_2026</div>
+                <span class="profileBadge">🛡️ Defensor del Agua</span>
+                <p class="profileMeta">ID: #GOTA-8492 • Nivel 5</p>
+            </div>
+        </div>
+
+        <p>Puntos obtenidos: <strong id="finalScore" style="color:#0077b6; font-size:22px;">0</strong></p>
+        <p>Agua ahorrada: <strong id="finalSaved" style="color:#38b000; font-size:22px;">0 L</strong></p>
+
+        <p id="finalText"></p>
+
+        <div class="shareBox">
+            <h3>📢 Comparte tu récord con tus amigos</h3>
+            <div class="shareButtons">
+                <button class="btnShare btnWa" onclick="shareNotice('WhatsApp')">📲 WhatsApp</button>
+                <button class="btnShare btnFb" onclick="shareNotice('Facebook')">📘 Facebook</button>
+                <button class="btnShare btnX" onclick="shareNotice('X')">🖤 X</button>
+                <button class="btnShare btnCopy" onclick="shareNotice('Enlace')">🔗 Copiar</button>
+            </div>
+        </div>
+
+        <div id="rankingBox">
+            <h2 style="text-align:center;">🏆 Mejores puntajes</h2>
+            <ol id="rankingList"></ol>
+        </div>
+
+        <button onclick="startGame()">JUGAR OTRA VEZ</button>
+    </div>
+</div>
+
+<div id="hud">
+    <div class="stat"><small>PUNTOS</small><strong id="score">0</strong></div>
+    <div class="stat"><small>AGUA AHORRADA</small><strong id="saved">0 L</strong></div>
+    <div class="stat"><small>TIEMPO</small><strong id="time">60</strong></div>
+    <div class="stat"><small>VIDAS</small><strong id="lives">❤️❤️❤️</strong></div>
+</div>
+
+<div id="gameArea">
+    <div id="miniTitle">Reto Gota</div>
+    <div id="instruction">Preparando...</div>
+    <div id="miniGame"></div>
+    <div id="feedback">...</div>
+</div>
+
+</div>
+
+<script>
+/* =========================================================
+   VARIABLES GLOBALES Y CONTROL
+========================================================= */
+let score = 0;
+let waterSaved = 0;
+let timeLeft = 60;
+let lives = 3;
+let gameRunning = false;
+let mainTimer = null;
+let miniTimer = null;
+let difficulty = 1;
+let activeTimers = [];
+let gameQueue = [];
+
+function setManagedTimeout(fn, ms){
+    const id = setTimeout(fn, ms);
+    activeTimers.push(id);
+    return id;
+}
+
+function setManagedInterval(fn, ms){
+    const id = setInterval(fn, ms);
+    activeTimers.push(id);
+    return id;
+}
+
+function clearAllTimers(){
+    activeTimers.forEach(id=>{
+        clearTimeout(id);
+        clearInterval(id);
+    });
+    activeTimers = [];
+}
+
+/* =========================================================
+   NOTIFICACIÓN REDES SOCIALES (DEMO)
+========================================================= */
+function shareNotice(platform){
+    showFeedback("📢 Función para compartir en " + platform + " próximamente");
+}
+
+/* =========================================================
+   RANKING
+========================================================= */
+let rankingMemory = [];
+
+async function loadRanking(){
+    try{
+        if(window.storage){
+            const res = await window.storage.get("reto-gota-ranking", false);
+            if(res && res.value) return JSON.parse(res.value);
+            return [];
+        }
+    }catch(e){}
+    return rankingMemory;
+}
+
+async function saveRanking(list){
+    try{
+        if(window.storage){
+            await window.storage.set("reto-gota-ranking", JSON.stringify(list), false);
+            return;
+        }
+    }catch(e){}
+    rankingMemory = list;
+}
+
+async function registerRankingEntry(entry){
+    const list = await loadRanking();
+    list.push(entry);
+    list.sort((a,b)=>{
+        if(b.score !== a.score) return b.score - a.score;
+        return b.time - a.time;
+    });
+    const top = list.slice(0,5);
+    await saveRanking(top);
+    return top;
+}
+
+function renderRanking(list, highlightEntry){
+    const rankingList = document.getElementById("rankingList");
+    if(!list.length){
+        rankingList.innerHTML = "<li>Todavía no hay puntajes guardados.</li>";
+        return;
+    }
+    rankingList.innerHTML = list.map(r=>{
+        const mins = Math.floor(r.time/60);
+        const secs = r.time%60;
+        const timeStr = (mins>0 ? mins+"m " : "") + secs+"s";
+        const isHighlight = r === highlightEntry;
+        const cls = isHighlight ? ' class="rankingHighlight"' : '';
+        return `<li${cls}><strong>${r.score} pts</strong> · ${r.waterSaved} L · ${timeStr} · <small>${r.date}</small></li>`;
+    }).join("");
+}
+
+/* =========================================================
+   JUEGO BASE
+========================================================= */
+const miniGame = document.getElementById("miniGame");
+const miniTitle = document.getElementById("miniTitle");
+const instruction = document.getElementById("instruction");
+const feedback = document.getElementById("feedback");
+
+function startGame(){
+    score = 0;
+    waterSaved = 0;
+    timeLeft = 60;
+    lives = 3;
+    difficulty = 1;
+    gameQueue = [];
+    gameRunning = true;
+
+    clearInterval(mainTimer);
+    clearAllTimers();
+
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("endScreen").style.display = "none";
+
+    updateHUD();
+
+    mainTimer = setInterval(()=>{
+        if(!gameRunning) return;
+        timeLeft--;
+        updateHUD();
+        if(timeLeft <= 0){
+            endGame();
+        }
+    },1000);
+
+    nextMiniGame();
+}
+
+function updateHUD(){
+    document.getElementById("score").textContent = score;
+    document.getElementById("saved").textContent = waterSaved + " L";
+    document.getElementById("time").textContent = timeLeft;
+    document.getElementById("lives").textContent = "❤️".repeat(lives);
+}
+
+function nextMiniGame(){
+    if(!gameRunning) return;
+    clearAllTimers();
+    miniGame.innerHTML = "";
+
+    const completed = Math.floor(score / 500);
+    difficulty = Math.min(5, 1 + Math.floor(completed / 2));
+
+    const games = [
+        miniFaucets, miniPipes, miniLeaks, miniBucket,
+        miniShower, miniSeal, miniDrops, miniValve,
+        miniPlants, miniHabits, miniRain
+    ];
+
+    const game = games[Math.floor(Math.random()*games.length)];
+    game();
+}
+
+function showFeedback(text, good=true){
+    feedback.textContent = text;
+    feedback.style.background = good ? "#087f5b" : "#c92a2a";
+    feedback.classList.add("show");
+    setTimeout(()=>{ feedback.classList.remove("show"); }, 1200);
+}
+
+function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+}
+
+/* =========================================================
+   MINIJUEGOS (LÓGICA)
+========================================================= */
+function miniFaucets(){
+    miniTitle.textContent = "🚰 Cierra todas las llaves";
+    instruction.textContent = "Haz clic rápidamente sobre todas las llaves abiertas.";
+    const total = 4 + difficulty;
+    let closed = 0;
+
+    for(let i=0;i<total;i++){
+        const faucet = document.createElement("div");
+        faucet.className = "faucet open";
+        faucet.innerHTML = "🚰<small>ABIERTA</small>";
+        faucet.style.left = (5 + Math.random()*85) + "%";
+        faucet.style.top = (5 + Math.random()*70) + "%";
+
+        faucet.onclick = ()=>{
+            if(faucet.classList.contains("closed")) return;
+            faucet.classList.remove("open");
+            faucet.classList.add("closed");
+            faucet.innerHTML = "🚰<small>CERRADA</small>";
+            closed++;
+            score += 100;
+            waterSaved += 10;
+            updateHUD();
+
+            if(closed === total){
+                showFeedback("💧 ¡Todas cerradas!");
+                setTimeout(nextMiniGame, 800);
+            }
+        };
+        miniGame.appendChild(faucet);
+    }
+
+    miniTimer = setManagedTimeout(()=>{
+        if(closed < total) loseLife("💦 ¡Quedaron llaves abiertas!");
+    },5000);
+}
+
+function miniPipes(){
+    miniTitle.textContent = "🔧 Conecta las tuberías";
+    instruction.textContent = "Haz clic sobre las piezas para rotarlas. Las que estén bien conectadas desde 💧 se pondrán verdes. Conecta todo el camino hasta 🚰.";
+    const solution = [0,1,2,0,0, 0,0,2,2,0, 0,0,0,1,0, 0,0,0,2,2, 0,0,0,0,1];
+    const path = [1,2,7,8,13,18,19,24];
+    const travel = [1,2,1,2,2,1,2];
+    const ENTRY_DIR = 3, EXIT_DIR = 2;
+
+    function opposite(d){ return (d + 2) % 4; }
+    function getConnections(type, rotation){
+        const base = type === 1 ? [0,2] : [0,1];
+        return base.map(d => (d + rotation) % 4);
+    }
+
+    // Cuenta cuántas piezas seguidas, empezando en la gota, están bien conectadas
+    function getConnectedCount(cellsByIndex){
+        let count = 0;
+        for(let i=0;i<path.length;i++){
+            const c = cellsByIndex[path[i]];
+            const conns = getConnections(c.type, c.rotation);
+            const neededIn = i === 0 ? ENTRY_DIR : opposite(travel[i-1]);
+            const neededOut = i === path.length - 1 ? EXIT_DIR : travel[i];
+            if(conns.includes(neededIn) && conns.includes(neededOut)) count++;
+            else break;
+        }
+        return count;
+    }
+
+    function updateFlow(cellsByIndex){
+        const connectedCount = getConnectedCount(cellsByIndex);
+        path.forEach((idx,i)=>{
+            const c = cellsByIndex[idx];
+            c.pipe.classList.toggle("flowing", i < connectedCount);
+        });
+        return connectedCount;
+    }
+
+    const board = document.createElement("div");
+    board.className = "pipeBoard";
+    const cellsByIndex = {};
+    let solved = false;
+
+    for(let i=0;i<solution.length;i++){
+        const cell = document.createElement("div");
+        cell.className = "pipeCell";
+        const type = solution[i];
+
+        if(type === 0){
+            cell.style.visibility = "hidden";
+            board.appendChild(cell);
+            continue;
+        }
+
+        const rotation = Math.floor(Math.random()*4);
+        const pipe = document.createElement("div");
+        pipe.className = "pipe " + (type === 1 ? "straight" : "corner");
+        pipe.style.transform = `rotate(${rotation*90}deg)`;
+
+        cell.appendChild(pipe);
+        board.appendChild(cell);
+        cellsByIndex[i] = { cell, pipe, type, rotation };
+
+        cell.onclick = ()=>{
+            if(solved) return;
+            cellsByIndex[i].rotation = (cellsByIndex[i].rotation + 1) % 4;
+            pipe.style.transform = `rotate(${cellsByIndex[i].rotation*90}deg)`;
+
+            const connectedCount = updateFlow(cellsByIndex);
+            if(connectedCount === path.length){
+                solved = true;
+                clearAllTimers();
+                score += 300; waterSaved += 50; updateHUD();
+                showFeedback("💧 ¡Tuberías conectadas! +50 L");
+                setTimeout(nextMiniGame, 900);
+            }
+        };
+    }
+
+    const startBadge = document.createElement("div");
+    startBadge.className = "pipeBadge"; startBadge.textContent = "💧";
+    startBadge.style.top = "-16px"; startBadge.style.left = "-16px";
+    cellsByIndex[path[0]].cell.appendChild(startBadge);
+
+    const endBadge = document.createElement("div");
+    endBadge.className = "pipeBadge"; endBadge.textContent = "🚰";
+    endBadge.style.bottom = "-16px"; endBadge.style.right = "-16px";
+    cellsByIndex[path[path.length-1]].cell.appendChild(endBadge);
+
+    miniGame.appendChild(board);
+    updateFlow(cellsByIndex);
+
+    miniTimer = setManagedTimeout(()=>{
+        if(!solved) loseLife("💦 ¡La tubería sigue perdiendo agua!");
+    },14000);
+}
+
+function miniLeaks(){
+    miniTitle.textContent = "💦 Repara las fugas";
+    instruction.textContent = "Haz clic sobre las 4 fugas antes de que el agua perdida llegue a 15 L.";
+    miniGame.innerHTML = `
+        <div class="leakPipe">
+            <div class="leak" style="left:15%;top:20%"></div>
+            <div class="leak" style="left:42%;top:55%"></div>
+            <div class="leak" style="left:70%;top:20%"></div>
+            <div class="leak" style="left:88%;top:50%"></div>
+        </div>
+        <div class="waterLost">💧 Agua perdida: <strong id="lost">0 L</strong> / 15 L</div>
+    `;
+
+    const leaks = document.querySelectorAll(".leak");
+    let repaired=0, lost=0, finished=false;
+    const lostText = document.getElementById("lost");
+
+    setManagedInterval(()=>{
+        if(finished) return;
+        lost++;
+        lostText.textContent = lost+" L";
+        if(lost >= 15){
+            finished = true;
+            loseLife("💦 ¡Se perdió demasiada agua!");
+        }
+    },350);
+
+    leaks.forEach(leak=>{
+        leak.onclick=()=>{
+            if(finished || leak.style.display === "none") return;
+            leak.style.display = "none";
+            repaired++;
+            score += 100; updateHUD();
+
+            if(repaired === leaks.length){
+                finished = true;
+                waterSaved += Math.max(20, 60-lost);
+                updateHUD();
+                showFeedback("🔧 ¡Todas las fugas reparadas!");
+                setTimeout(nextMiniGame, 800);
+            }
+        };
+    });
+
+    miniTimer = setManagedTimeout(()=>{
+        if(!finished){
+            finished = true;
+            loseLife("💦 ¡No reparaste todas las fugas!");
+        }
+    },8000);
+}
+
+function miniBucket(){
+    miniTitle.textContent = "🪣 Llena el balde";
+    instruction.textContent = "Mantén presionado el botón para abrir el grifo y suéltalo cuando el balde esté entre 80% y 100% lleno (sobre la línea de meta).";
+    miniGame.innerHTML = `
+        <div class="bucketScene">
+            <div class="tap">🚰</div>
+            <div class="bucket">
+                <div class="bucketWater" id="bucketWater"></div>
+                <div class="bucketTargetLine"></div>
+                <div class="bucketText" id="bucketText">0%</div>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button id="waterButton" style="touch-action:none;">💧 MANTENER PARA ABRIR</button>
+        </div>
+    `;
+
+    let level=0, filling=false, finished=false;
+    const water = document.getElementById("bucketWater");
+    const text = document.getElementById("bucketText");
+    const button = document.getElementById("waterButton");
+
+    setManagedInterval(()=>{
+        if(filling){
+            level += 1.5;
+            if(level >= 100){ level=100; showFeedback("⚠️ ¡Suelta ahora!"); }
+            water.style.height = level+"%";
+            text.textContent = Math.floor(level)+"%";
+        }
+    },100);
+
+    function release(){
+        if(finished) return;
+        filling=false;
+
+        if(level >= 80 && level <= 100){
+            finished=true;
+            clearAllTimers();
+            score += 200; waterSaved += 30; updateHUD();
+            showFeedback("🪣 ¡Perfecto! Cero desperdicio.");
+            setTimeout(nextMiniGame, 800);
+        }else if(level > 100){
+            loseLife("💦 ¡El balde se desbordó!");
+        }else{
+            loseLife("🪣 ¡El balde quedó demasiado vacío!");
+        }
+    }
+
+    button.onpointerdown = e=>{ filling = true; button.setPointerCapture(e.pointerId); };
+    button.onpointerup = release;
+    button.onpointercancel = release;
+
+    miniTimer = setManagedTimeout(()=>{
+        if(!finished) loseLife("⏰ ¡No llenaste el balde a tiempo!");
+    },7500);
+}
+
+function miniShower(){
+    miniTitle.textContent = "🚿 Controla la ducha";
+    instruction.textContent = "Mantén presionado el botón para abrir la ducha y ciérrala cuando el tiempo esté entre 3 y 6 segundos (zona verde).";
+    miniGame.innerHTML = `
+        <div class="showerScene">
+            <div class="showerIcon" id="showerIcon">🚿</div>
+            <div class="progressContainer">
+                <div class="showerZone"></div>
+                <div class="progress" id="showerProgress"></div>
+            </div>
+            <h2>Tiempo: <span id="showerSeconds">0.0</span>s</h2>
+            <p>🎯 Objetivo: entre 3s y 6s</p>
+            <div class="showerButtons">
+                <button id="showerButton" style="touch-action:none;">💧 MANTENER ABIERTA</button>
+                <button id="closeShower">🔒 CERRAR</button>
+            </div>
+        </div>
+    `;
+
+    let value=0, open=false, finished=false;
+    const icon = document.getElementById("showerIcon");
+    const progress = document.getElementById("showerProgress");
+    const seconds = document.getElementById("showerSeconds");
+    const openButton = document.getElementById("showerButton");
+    const closeButton = document.getElementById("closeShower");
+
+    openButton.onpointerdown = e=>{ open = true; icon.classList.add("running"); openButton.setPointerCapture(e.pointerId); };
+    openButton.onpointerup = ()=>{ open = false; icon.classList.remove("running"); };
+    openButton.onpointercancel = ()=>{ open = false; icon.classList.remove("running"); };
+
+    setManagedInterval(()=>{
+        if(open && !finished){
+            value += .1;
+            progress.style.width = Math.min(100, value*10)+"%";
+            seconds.textContent = value.toFixed(1);
+        }
+    },100);
+
+    closeButton.onclick=()=>{
+        if(finished) return;
+        finished=true;
+        open=false;
+        icon.classList.remove("running");
+        if(value >= 3 && value <= 6){
+            clearAllTimers();
+            score += 250; waterSaved += 50; updateHUD();
+            showFeedback("🚿 ¡Ducha eficiente!");
+            setTimeout(nextMiniGame, 800);
+        }else{
+            loseLife("🚿 ¡Hay que controlar mejor el tiempo!");
+        }
+    };
+
+    miniTimer = setManagedTimeout(()=>{
+        if(!finished) loseLife("💦 ¡La ducha estuvo abierta demasiado tiempo!");
+    },8000);
+}
+
+function miniSeal(){
+    miniTitle.textContent = "🧰 Sella la tubería";
+    instruction.textContent = "Arrastra el parche 🔧 hasta el centro del círculo punteado para sellar la fuga.";
+    miniGame.innerHTML = `
+        <div class="sealScene">
+            <div class="bigPipe"></div>
+            <div class="holeZone"></div>
+            <div class="hole">💦</div>
+            <div class="patch" id="patch" style="left:20px;top:20px;">🔧</div>
+        </div>
+    `;
+
+    const patch = document.getElementById("patch");
+    const scene = document.querySelector(".sealScene");
+    let offsetX = 0, offsetY = 0, sealed = false;
+
+    patch.addEventListener("pointerdown", e=>{
+        if(sealed) return;
+        patch.setPointerCapture(e.pointerId);
+        const r = patch.getBoundingClientRect();
+        offsetX = e.clientX - r.left; offsetY = e.clientY - r.top;
+    });
+
+    patch.addEventListener("pointermove", e=>{
+        if(sealed || !patch.hasPointerCapture(e.pointerId)) return;
+        const sceneRect = scene.getBoundingClientRect();
+        patch.style.left = (e.clientX - sceneRect.left - offsetX) + "px";
+        patch.style.top = (e.clientY - sceneRect.top - offsetY) + "px";
+    });
+
+    patch.addEventListener("pointerup", ()=>{
+        if(sealed) return;
+        const sceneRect = scene.getBoundingClientRect();
+        const patchRect = patch.getBoundingClientRect();
+        const patchCenterX = patchRect.left - sceneRect.left + patchRect.width/2;
+        const patchCenterY = patchRect.top - sceneRect.top + patchRect.height/2;
+
+        const distance = Math.hypot(patchCenterX - sceneRect.width/2, patchCenterY - 152);
+
+        if(distance < 70){
+            sealed = true;
+            clearAllTimers();
+            score += 250; waterSaved += 40; updateHUD();
+            showFeedback("🧰 ¡Fuga sellada!");
+            setTimeout(nextMiniGame, 800);
+        }else{
+            showFeedback("🔧 Acerca el parche al círculo punteado.", false);
+        }
+    });
+
+    miniTimer = setManagedTimeout(()=>{
+        if(!sealed) loseLife("💦 ¡No lograste sellar la fuga!");
+    },8000);
+}
+
+function miniDrops(){
+    miniTitle.textContent = "💧 Atrapa el agua";
+    instruction.textContent = "Haz clic sobre las gotas antes de que lleguen al suelo.";
+    const scene = document.createElement("div");
+    scene.className = "dropScene";
+    miniGame.appendChild(scene);
+
+    let collected=0, missed=0, finished=false;
+    const total = 8 + difficulty;
+
+    for(let i=0;i<total;i++){
+        setManagedTimeout(()=>{
+            if(!gameRunning || finished) return;
+            const drop = document.createElement("div");
+            drop.className = "drop"; drop.textContent = "💧";
+            drop.style.left = (5+Math.random()*90)+"%"; drop.style.top = "-40px";
+            scene.appendChild(drop);
+
+            let y=-40;
+            const speed = 1.5 + Math.random()*1.5 + difficulty*.3;
+
+            const fall = setManagedInterval(()=>{
+                if(finished){ clearInterval(fall); drop.remove(); return; }
+                y += speed;
+                drop.style.top = y+"px";
+
+                if(y > scene.clientHeight){
+                    clearInterval(fall); drop.remove(); missed++;
+                    if(missed >= 3){
+                        finished = true;
+                        loseLife("💦 ¡Dejaste escapar demasiadas gotas!");
+                    }
+                }
+            },16);
+
+            drop.onclick=()=>{
+                if(finished) return;
+                clearInterval(fall); drop.remove();
+                collected++; score += 50; waterSaved += 5; updateHUD();
+
+                if(collected >= total){
+                    finished = true;
+                    showFeedback("💧 ¡Todas las gotas recuperadas!");
+                    setTimeout(nextMiniGame, 800);
+                }
+            };
+        },i*400);
+    }
+
+    miniTimer = setManagedTimeout(()=>{
+        if(collected<total && !finished){
+            finished = true;
+            loseLife("💦 ¡No atrapaste suficiente agua!");
+        }
+    },6500+total*200);
+}
+
+function miniValve(){
+    miniTitle.textContent = "🌀 Regula la presión";
+    instruction.textContent = "Haz clic en el engranaje para mover la aguja. Detente cuando esté dentro de la zona verde (40%-60%).";
+    miniGame.innerHTML = `
+        <div class="valveScene">
+            <div class="valve" id="valve">⚙️</div>
+            <div class="pressure"><div class="pressureZone"></div><div class="pressureMarker" id="marker"></div></div>
+            <h2>Presión: <span id="pressureText">50</span>%</h2>
+            <p>🎯 Objetivo: 40% - 60% (zona verde)</p>
+        </div>
+    `;
+
+    let pressure = Math.random()*100;
+    let solved = false;
+    let rotation = 0;
+    const valve = document.getElementById("valve");
+    const marker = document.getElementById("marker");
+    const text = document.getElementById("pressureText");
+
+    function updatePressure(){
+        marker.style.left = pressure+"%";
+        text.textContent = Math.round(pressure);
+    }
+    updatePressure();
+
+    valve.onclick=()=>{
+        if(solved) return;
+        pressure = (pressure + 7) % 100;
+        rotation += 45;
+        valve.style.transform = `rotate(${rotation}deg)`;
+        updatePressure();
+
+        if(pressure>=40 && pressure<=60){
+            solved = true;
+            clearAllTimers();
+            score+=300; waterSaved+=60; updateHUD();
+            showFeedback("🌀 ¡Presión perfecta!");
+            setTimeout(nextMiniGame, 800);
+        }
+    };
+
+    miniTimer = setManagedTimeout(()=>{
+        if(!solved) loseLife("💦 ¡No regulaste correctamente la presión!");
+    },7000);
+}
+
+function miniPlants(){
+    miniTitle.textContent = "🌱 Riega las plantas";
+    instruction.textContent = "Haz clic en REGAR cuando el indicador esté en la zona verde.";
+    const totalPlants = 3;
+    let plantIndex = 0, position = 0, direction = 1, finished = false;
+
+    miniGame.innerHTML = `
+        <div class="plantScene">
+            <div class="plantRow" id="plantRow"></div>
+            <div class="gauge">
+                <div class="gaugeZone"></div>
+                <div class="gaugeMarker" id="gaugeMarker"></div>
+            </div>
+            <button id="waterPlantBtn">💧 REGAR</button>
+        </div>
+    `;
+
+    const plantRow = document.getElementById("plantRow");
+    for(let i=0;i<totalPlants;i++){
+        const p = document.createElement("div");
+        p.id = "plant"+i; p.textContent = "🌱";
+        plantRow.appendChild(p);
+    }
+
+    const marker = document.getElementById("gaugeMarker");
+    const btn = document.getElementById("waterPlantBtn");
+    const speed = 2.5 + difficulty*0.4;
+
+    setManagedInterval(()=>{
+        if(finished) return;
+        position += direction*speed;
+        if(position >= 100){ position = 100; direction = -1; }
+        if(position <= 0){ position = 0; direction = 1; }
+        marker.style.left = position+"%";
+    }, 30);
+
+    btn.onclick = ()=>{
+        if(finished) return;
+        if(position >= 40 && position <= 60){
+            document.getElementById("plant"+plantIndex).textContent = "🌿";
+            plantIndex++; score += 150; waterSaved += 15; updateHUD();
+
+            if(plantIndex >= totalPlants){
+                finished = true;
+                showFeedback("🌱 ¡Todas las plantas regadas!");
+                setTimeout(nextMiniGame, 800);
+            }else{
+                showFeedback("💧 ¡Bien regada!");
+            }
+        }else{
+            showFeedback("⚠️ Cantidad de agua incorrecta", false);
+        }
+    };
+
+    miniTimer = setManagedTimeout(()=>{
+        if(!finished) loseLife("🌱 ¡No lograste regar todas las plantas a tiempo!");
+    },10000);
+}
+
+function miniHabits(){
+    miniTitle.textContent = "♻️ Buenos hábitos del agua";
+    instruction.textContent = "Haz clic SOLO en las acciones que ahorran agua.";
+
+    const goodPool = [
+        {emoji:"🚿", label:"Ducha corta"}, {emoji:"🪣", label:"Balde lavar auto"},
+        {emoji:"🌧️", label:"Recolectar lluvia"}, {emoji:"🔧", label:"Reparar fuga"},
+        {emoji:"🥦", label:"Reusar agua cocción"}
+    ];
+    const badPool = [
+        {emoji:"🚰", label:"Grifo abierto"}, {emoji:"🚗", label:"Lavar con manguera"},
+        {emoji:"🛁", label:"Tina llena"}, {emoji:"❄️", label:"Descongelar con grifo"}
+    ];
+
+    const goodCount = 3 + Math.min(2, difficulty-1);
+    const chosenGood = shuffle(goodPool).slice(0, goodCount);
+    const chosenBad = shuffle(badPool).slice(0, 3);
+    let remaining = chosenGood.length, failed = false;
+
+    function place(item, isGood){
+        const el = document.createElement("div");
+        el.className = "habitIcon";
+        el.innerHTML = `${item.emoji}<small>${item.label}</small>`;
+        el.style.left = (5 + Math.random()*78) + "%";
+        el.style.top = (5 + Math.random()*68) + "%";
+
+        el.onclick = ()=>{
+            if(failed) return;
+            if(isGood){
+                el.remove(); score += 120; waterSaved += 12; updateHUD();
+                remaining--;
+                if(remaining <= 0){
+                    failed = true;
+                    showFeedback("♻️ ¡Excelentes hábitos!");
+                    setTimeout(nextMiniGame, 800);
+                }
+            }else{
+                failed = true;
+                loseLife("🚱 ¡Esa acción desperdicia agua!");
+            }
+        };
+        miniGame.appendChild(el);
+    }
+
+    chosenGood.forEach(i=>place(i,true));
+    chosenBad.forEach(i=>place(i,false));
+
+    miniTimer = setManagedTimeout(()=>{
+        if(remaining > 0 && !failed){
+            failed = true;
+            loseLife("⏰ ¡No elegiste todos los buenos hábitos!");
+        }
+    },7500);
+}
+
+function miniRain(){
+    miniTitle.textContent = "🌧️ Recolecta el agua de lluvia";
+    instruction.textContent = "Arrastra el barril para atrapar las gotas de lluvia.";
+
+    miniGame.innerHTML = `
+        <div class="rainScene" id="rainScene">
+            <div class="rainGaugeWrap"><div class="rainGauge" id="rainGauge"></div></div>
+            <div class="rainBarrel" id="rainBarrel">🛢️</div>
+        </div>
+    `;
+
+    const scene = document.getElementById("rainScene");
+    const barrel = document.getElementById("rainBarrel");
+    const gauge = document.getElementById("rainGauge");
+
+    let barrelX = 50, collected = 0, finished = false;
+    const target = 8;
+
+    function setBarrelX(clientX){
+        const rect = scene.getBoundingClientRect();
+        let pct = ((clientX-rect.left)/rect.width)*100;
+        pct = Math.max(8, Math.min(92, pct));
+        barrelX = pct;
+        barrel.style.left = pct+"%";
+    }
+
+    scene.addEventListener("pointerdown", e=>{ scene.setPointerCapture(e.pointerId); setBarrelX(e.clientX); });
+    scene.addEventListener("pointermove", e=>{ if(scene.hasPointerCapture(e.pointerId)) setBarrelX(e.clientX); });
+
+    const totalDrops = 12 + difficulty*2;
+
+    function spawnRainDrop(){
+        if(finished) return;
+        const drop = document.createElement("div");
+        drop.className = "rainDrop"; drop.textContent = "💧";
+        const x = 10 + Math.random()*80;
+        drop.style.left = x+"%"; drop.style.top = "0px";
+        scene.appendChild(drop);
+
+        let y = 0;
+        const speed = 3 + difficulty*0.4;
+
+        const fall = setManagedInterval(()=>{
+            if(finished){ clearInterval(fall); drop.remove(); return; }
+            y += speed;
+            drop.style.top = y+"px";
+
+            const sceneRect = scene.getBoundingClientRect();
+            if(y >= sceneRect.height-45){
+                clearInterval(fall);
+                if(Math.abs(x-barrelX) < 11){
+                    collected++; score += 40; waterSaved += 8; updateHUD();
+                    gauge.style.width = Math.min(100,(collected/target)*100)+"%";
+                }
+                drop.remove();
+
+                if(collected >= target && !finished){
+                    finished = true;
+                    showFeedback("🌧️ ¡Barril lleno de agua de lluvia!");
+                    setTimeout(nextMiniGame, 800);
+                }
+            }
+        },16);
+    }
+
+    for(let i=0;i<totalDrops;i++){
+        setManagedTimeout(()=>{ spawnRainDrop(); }, i*420 + Math.random()*180);
+    }
+
+    miniTimer = setManagedTimeout(()=>{
+        if(!finished) loseLife("🌧️ ¡No llenaste el barril a tiempo!");
+    },9500+totalDrops*180);
+}
+
+/* =========================================================
+   ESTADOS DE PERDER VIDA / FINALIZAR
+========================================================= */
+function loseLife(message){
+    if(!gameRunning) return;
+    clearAllTimers();
+    lives--;
+    updateHUD();
+    showFeedback(message, false);
+
+    if(lives<=0){
+        setTimeout(endGame, 700);
+        return;
+    }
+    setTimeout(nextMiniGame, 900);
+}
+
+function endGame(){
+    if(!gameRunning) return;
+    gameRunning=false;
+
+    clearInterval(mainTimer);
+    clearAllTimers();
+
+    document.getElementById("finalScore").textContent = score;
+    document.getElementById("finalSaved").textContent = waterSaved+" L";
+
+    let title, text;
+
+    if(score>=2000){
+        title = "🏆 ¡GUARDIÁN DEL AGUA!";
+        text = "Excelente trabajo. Completaste muchos retos y demostraste que pequeñas acciones evitan grandes desperdicios.";
+    }else if(score>=1000){
+        title = "💧 ¡MUY BUEN TRABAJO!";
+        text = "Vas por buen camino. Sigue practicando hábitos responsables con el agua.";
+    }else{
+        title = "🌊 ¡INTÉNTALO DE NUEVO!";
+        text = "El agua se desperdició demasiado. Mejora tus tiempos y vuelve a intentarlo.";
+    }
+
+    document.getElementById("resultTitle").textContent = title;
+    document.getElementById("finalText").textContent = text;
+    document.getElementById("endScreen").style.display = "flex";
+
+    const entry = {
+        score,
+        waterSaved,
+        time: 60 - timeLeft,
+        date: new Date().toLocaleString()
+    };
+
+    registerRankingEntry(entry).then(top=>{
+        renderRanking(top, entry);
+    });
+}
+</script>
+
+</body>
+</html>

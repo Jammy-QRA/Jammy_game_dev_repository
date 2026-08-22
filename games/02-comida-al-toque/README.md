@@ -38,7 +38,7 @@ El juego busca representar de manera sencilla la dinámica de atención al clien
 
 ---
 
-## 📂 Estructura del proyecto
+##  Estructura del proyecto
 
 ```
 02-comida-al-toque
@@ -55,7 +55,7 @@ El juego busca representar de manera sencilla la dinámica de atención al clien
 
 ---
 
-## 📸 Capturas del juego
+##  Capturas del juego
 
 ### Pantalla inicial
 
@@ -73,7 +73,7 @@ El juego busca representar de manera sencilla la dinámica de atención al clien
 
 ---
 
-## 🚀 Ejecutar el proyecto
+##  Ejecutar el proyecto
 
 Para ejecutar el juego localmente:
 
@@ -94,15 +94,15 @@ comida_al_toque.html
 
 ---
 
-## 🌐 Jugar online
+##  Jugar online
 
 Puedes probar el juego directamente desde GitHub Pages:
 
-🎮 [Jugar Comida al Toque](https://jammy-qra.github.io/Jammy_game_dev_repository/games/02-comida-al-toque/project/comida_al_toque.html)
+ [Jugar Comida al Toque](https://jammy-qra.github.io/Jammy_game_dev_repository/games/02-comida-al-toque/project/comida_al_toque.html)
 
 ---
 
-## 👨‍💻 Autor
+##  Autora
 
 **Jammy-QRA**
 

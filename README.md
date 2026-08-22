@@ -77,7 +77,7 @@ El juego utiliza un sistema de vida y, además, explica por qué determinados al
 ## ♻️ 03 — Tinder Trash
 
 <p align="center">
-  <img src="games/03-tinder-trash/assets/screenshots/tinder%trash%gameplay.png" width="70%">
+<img src="games/03-tinder-trash/assets/screenshots/tinder%20trash%20gameplay.png" width="70%">
 </p>
 
 **Puzzle / Educativo** · HTML5, CSS3, JavaScript
@@ -95,7 +95,7 @@ Las tarjetas representan objetos como plástico, vidrio, papel, metal y basura c
 ## 💬 04 — Detrás del Muro
 
 <p align="center">
-  <img src="games/04-detras-del-muro/assets/screenshots/detras%del%muro%inicio.png" width="70%">
+<img src="games/04-detras-del-muro/assets/screenshots/detras%20del%20muro%20inicio.png" width="70%">
 </p>
 
 **Storytelling / Decisiones / Educativo** · HTML5, CSS3, JavaScript
@@ -115,7 +115,7 @@ No existe una forma tradicional de ganar o perder: el propósito es mostrar que 
 ## 💧 05 — Reto Gota
 
 <p align="center">
-  <img src="games/05-reto-gota/assets/screenshots/reto%gota%gameplay.png" width="70%">
+ <img src="games/05-reto-gota/assets/screenshots/reto%20gota%20gameplay.png" width="70%">
 </p>
 
 **Minijuegos / Arcade / Educativo** · HTML5, CSS3, JavaScript
@@ -133,7 +133,7 @@ Cada reto tiene un límite de tiempo y el jugador debe administrar cuidadosament
 ## 💰 06 — El Ministerio del Invierno
 
 <p align="center">
-  <img src="games/06-ministerio-del-invierno/assets/screenshots/mdi%gameplay%2.png" width="70%">
+ <img src="games/06-ministerio-del-invierno/assets/screenshots/mdi%20gameplay.png" width="70%">
 </p>
 
 **Simulación / Decisiones / Educativo** · HTML5, CSS3, JavaScript

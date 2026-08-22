@@ -36,7 +36,7 @@ El objetivo principal es poner a prueba la rapidez mental y la capacidad de reso
 
 ---
 
-## 📂 Estructura del proyecto
+##  Estructura del proyecto
 
 ```
 01-math-quest
@@ -55,7 +55,7 @@ El objetivo principal es poner a prueba la rapidez mental y la capacidad de reso
 
 ---
 
-## 📸 Capturas del juego
+##  Capturas del juego
 
 ### Pantalla inicial
 
@@ -73,7 +73,7 @@ El objetivo principal es poner a prueba la rapidez mental y la capacidad de reso
 
 ---
 
-## 🚀 Ejecutar el proyecto
+##  Ejecutar el proyecto
 
 Para ejecutar el juego localmente:
 
@@ -94,15 +94,15 @@ index.html
 
 ---
 
-## 🌐 Jugar online
+##  Jugar online
 
 Puedes probar el juego directamente desde GitHub Pages:
 
-🎮 [Jugar Math Quest](https://jammy-qra.github.io/Jammy_game_dev_repository/games/01-math-quest/project/)
+ [Jugar Math Quest](https://jammy-qra.github.io/Jammy_game_dev_repository/games/01-math-quest/project/)
 
 ---
 
-## 👨‍💻 Autora
+##  Autora
 
 **Jammy-QRA**
 

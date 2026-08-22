@@ -1,447 +1,566 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Jammy - Game Development Portfolio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<title>Jammy - Game Dev Portfolio</title>
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #111827;
-            color: white;
-        }
+<style>
 
-        header {
-            text-align: center;
-            padding: 70px 20px;
-            background: linear-gradient(135deg, #7c3aed, #2563eb);
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        header h1 {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
+body{
+    font-family:Arial, sans-serif;
+    background:#111827;
+    color:white;
+}
 
-        header p {
-            font-size: 20px;
-            color: #e5e7eb;
-        }
 
-        .container {
-            max-width: 1100px;
-            margin: auto;
-            padding: 50px 20px;
-        }
+header{
 
-        .titulo {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+    text-align:center;
+    padding:70px 20px;
+    background:linear-gradient(135deg,#7c3aed,#2563eb);
 
-        .titulo h2 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
+}
 
-        .titulo p {
-            color: #9ca3af;
-        }
 
-        .games {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
+header h1{
 
-        .game {
-            background: #1f2937;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 1px solid #374151;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
+    font-size:45px;
+    margin-bottom:15px;
 
-        .game:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-        }
+}
 
-        .game-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            background: #374151;
-        }
 
-        .game-content {
-            padding: 20px;
-        }
+header p{
 
-        .game-content h3 {
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
+    font-size:20px;
+    color:#e5e7eb;
 
-        .game-content p {
-            color: #9ca3af;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
+}
 
-        .buttons {
-            display: flex;
-            gap: 10px;
-        }
 
-        .btn {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.2s;
-        }
 
-        .play {
-            background: #7c3aed;
-            color: white;
-        }
+.container{
 
-        .play:hover {
-            background: #6d28d9;
-        }
+    max-width:1100px;
+    margin:auto;
+    padding:50px 20px;
 
-        .code {
-            background: #374151;
-            color: white;
-        }
+}
 
-        .code:hover {
-            background: #4b5563;
-        }
 
-        footer {
-            text-align: center;
-            padding: 30px;
-            color: #9ca3af;
-            border-top: 1px solid #374151;
-            margin-top: 40px;
-        }
 
-        @media (max-width: 600px) {
+.titulo{
 
-            header h1 {
-                font-size: 34px;
-            }
+    text-align:center;
+    margin-bottom:40px;
 
-            header p {
-                font-size: 16px;
-            }
+}
 
-            .buttons {
-                flex-direction: column;
-            }
-        }
-    </style>
+
+.titulo h2{
+
+    font-size:32px;
+
+}
+
+
+.titulo p{
+
+    color:#9ca3af;
+    margin-top:10px;
+
+}
+
+
+
+.games{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+
+}
+
+
+
+.game{
+
+    background:#1f2937;
+    border-radius:15px;
+    overflow:hidden;
+    border:1px solid #374151;
+    transition:0.3s;
+
+}
+
+
+
+.game:hover{
+
+    transform:translateY(-8px);
+    box-shadow:0 15px 30px rgba(0,0,0,0.4);
+
+}
+
+
+
+.game-image{
+
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    display:block;
+
+}
+
+
+
+.game-content{
+
+    padding:20px;
+
+}
+
+
+.game-content h3{
+
+    font-size:22px;
+    margin-bottom:10px;
+
+}
+
+
+
+.game-content p{
+
+    color:#9ca3af;
+    line-height:1.5;
+    margin-bottom:20px;
+
+}
+
+
+
+.buttons{
+
+    display:flex;
+    gap:10px;
+
+}
+
+
+
+.btn{
+
+    flex:1;
+    text-align:center;
+    padding:12px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+
+}
+
+
+
+.play{
+
+    background:#7c3aed;
+    color:white;
+
+}
+
+
+
+.play:hover{
+
+    background:#6d28d9;
+
+}
+
+
+
+.code{
+
+    background:#374151;
+    color:white;
+
+}
+
+
+
+.code:hover{
+
+    background:#4b5563;
+
+}
+
+
+
+footer{
+
+    text-align:center;
+    padding:30px;
+    margin-top:40px;
+    border-top:1px solid #374151;
+    color:#9ca3af;
+
+}
+
+
+</style>
+
 </head>
+
 
 <body>
 
-    <header>
-        <h1>🎮 Jammy's Game Dev Portfolio</h1>
 
-        <p>
-            Una colección de juegos creados como parte de mi aprendizaje
-            en desarrollo de videojuegos.
-        </p>
-    </header>
+<header>
 
+<h1>🎮 Jammy's Game Dev Portfolio</h1>
 
-    <main class="container">
+<p>
+Colección de juegos creados durante mi aprendizaje en desarrollo de videojuegos.
+</p>
 
-        <div class="titulo">
-            <h2>🕹️ Mis Juegos</h2>
+</header>
 
-            <p>
-                Explora mis proyectos y juega directamente desde el navegador.
-            </p>
-        </div>
 
 
-        <section class="games">
+<main class="container">
 
 
-            <!-- JUEGO 1 -->
+<div class="titulo">
 
-            <article class="game">
+<h2>🕹️ Mis Juegos</h2>
 
-                <div class="game-image">
-                    🧮
-                </div>
+<p>
+Explora mis proyectos y juega directamente desde el navegador.
+</p>
 
-                <div class="game-content">
+</div>
 
-                    <h3>Math Quest</h3>
 
-                    <p>
-                        Un juego de desafíos matemáticos donde tendrás que
-                        resolver problemas antes de que se acabe el tiempo.
-                    </p>
 
-                    <div class="buttons">
+<section class="games">
 
-                        <a
-                            class="btn play"
-                            href="games/01-math-quest/project/"
-                        >
-                            🎮 JUGAR
-                        </a>
 
-                        <a
-                            class="btn code"
-                            href="https://github.com/Jammy-QRA/Jammy_game_dev_repository/tree/main/games/01-math-quest"
-                            target="_blank"
-                        >
-                            💻 CÓDIGO
-                        </a>
 
-                    </div>
+<!-- MATH QUEST -->
 
-                </div>
+<article class="game">
 
-            </article>
+<img class="game-image"
+src="games/01-math-quest/games/01-math-quest/assets/screenshots/pantalla%20inicio.png">
 
 
-            <!-- JUEGO 2 -->
+<div class="game-content">
 
-            <article class="game">
+<h3>🧮 Math Quest</h3>
 
-                <div class="game-image">
-                    🍔
-                </div>
+<p>
+Juego de desafíos matemáticos donde el jugador debe resolver problemas antes de que termine el tiempo.
+</p>
 
-                <div class="game-content">
 
-                    <h3>Comida al Toque</h3>
+<div class="buttons">
 
-                    <p>
-                        Un juego basado en comida donde tendrás que demostrar
-                        rapidez y tomar las decisiones correctas.
-                    </p>
+<a class="btn play"
+href="games/01-math-quest/project/">
+🎮 JUGAR
+</a>
 
-                    <div class="buttons">
 
-                        <a
-                            class="btn play"
-                            href="games/02-comida-al-toque/project/comida_al_toque.html"
-                        >
-                            🎮 JUGAR
-                        </a>
+<a class="btn code"
+href="https://github.com/Jammy-QRA/Jammy_game_dev_repository/tree/main/games/01-math-quest"
+target="_blank">
+💻 CÓDIGO
+</a>
 
-                        <a
-                            class="btn code"
-                            href="https://github.com/Jammy-QRA/Jammy_game_dev_repository/tree/main/games/02-comida-al-toque"
-                            target="_blank"
-                        >
-                            💻 CÓDIGO
-                        </a>
 
-                    </div>
+</div>
 
-                </div>
+</div>
 
-            </article>
+</article>
 
 
-            <!-- JUEGO 3 -->
 
-            <article class="game">
 
-                <div class="game-image">
-                    🗑️
-                </div>
 
-                <div class="game-content">
+<!-- COMIDA AL TOQUE -->
 
-                    <h3>Tinder Trash</h3>
 
-                    <p>
-                        Un juego donde tendrás que tomar decisiones rápidas
-                        relacionadas con la clasificación de residuos.
-                    </p>
+<article class="game">
 
-                    <div class="buttons">
 
-                        <a
-                            class="btn play"
-                            href="games/03-tinder-trash/project/tinder_trash%20(1).html"
-                        >
-                            🎮 JUGAR
-                        </a>
+<img class="game-image"
+src="games/02-comida-al-toque/assets/screenshots/comida%20al%20toque%20inicio.png">
 
-                        <a
-                            class="btn code"
-                            href="https://github.com/Jammy-QRA/Jammy_game_dev_repository/tree/main/games/03-tinder-trash"
-                            target="_blank"
-                        >
-                            💻 CÓDIGO
-                        </a>
 
-                    </div>
 
-                </div>
+<div class="game-content">
 
-            </article>
+<h3>🍔 Comida al Toque</h3>
 
+<p>
+Juego donde la rapidez y la toma de decisiones son importantes para completar los pedidos.
+</p>
 
-            <!-- JUEGO 4 -->
 
-            <article class="game">
 
-                <div class="game-image">
-                    🚪
-                </div>
+<div class="buttons">
 
-                <div class="game-content">
 
-                    <h3>Detrás del Muro</h3>
+<a class="btn play"
+href="games/02-comida-al-toque/project/comida_al_toque.html">
+🎮 JUGAR
+</a>
 
-                    <p>
-                        Una experiencia interactiva donde tendrás que
-                        descubrir qué se encuentra detrás del muro.
-                    </p>
 
-                    <div class="buttons">
 
-                        <a
-                            class="btn play"
-                            href="games/04-detras-del-muro/project/detras-del-muro.html"
-                        >
-                            🎮 JUGAR
-                        </a>
+<a class="btn code"
+href="https://github.com/Jammy-QRA/Jammy_game_dev_repository/tree/main/games/02-comida-al-toque"
+target="_blank">
+💻 CÓDIGO
+</a>
 
-                        <a
-                            class="btn code"
-                            href="https://github.com/Jammy-QRA/Jammy_game_dev_repository/tree/main/games/04-detras-del-muro"
-                            target="_blank"
-                        >
-                            💻 CÓDIGO
-                        </a>
 
-                    </div>
+</div>
 
-                </div>
+</div>
 
-            </article>
+</article>
 
 
-            <!-- JUEGO 5 -->
 
-            <article class="game">
 
-                <div class="game-image">
-                    💧
-                </div>
 
-                <div class="game-content">
+<!-- TINDER TRASH -->
 
-                    <h3>Reto Gota</h3>
 
-                    <p>
-                        Un desafío relacionado con el cuidado del agua,
-                        donde tendrás que superar diferentes retos.
-                    </p>
+<article class="game">
 
-                    <div class="buttons">
 
-                        <a
-                            class="btn play"
-                            href="games/05-reto-gota/project/reto-gota_mejorado.html"
-                        >
-                            🎮 JUGAR
-                        </a>
+<img class="game-image"
+src="games/03-tinder-trash/assets/screenshots/tinder%20trash%20inicio.png">
 
-                        <a
-                            class="btn code"
-                            href="https://github.com/Jammy-QRA/Jammy_game_dev_repository/tree/main/games/05-reto-gota"
-                            target="_blank"
-                        >
-                            💻 CÓDIGO
-                        </a>
 
-                    </div>
 
-                </div>
+<div class="game-content">
 
-            </article>
+<h3>🗑️ Tinder Trash</h3>
 
 
-            <!-- JUEGO 6 -->
+<p>
+Juego enfocado en la clasificación de residuos mediante decisiones rápidas.
+</p>
 
-            <article class="game">
 
-                <div class="game-image">
-                    ❄️
-                </div>
 
-                <div class="game-content">
+<div class="buttons">
 
-                    <h3>Ministerio del Invierno</h3>
 
-                    <p>
-                        Una aventura interactiva ambientada en un mundo
-                        invernal lleno de desafíos.
-                    </p>
+<a class="btn play"
+href="games/03-tinder-trash/project/tinder_trash%20(1).html">
+🎮 JUGAR
+</a>
 
-                    <div class="buttons">
 
-                        <a
-                            class="btn play"
-                            href="games/06-ministerio-del-invierno/project/ministerio_del_invierno.html"
-                        >
-                            🎮 JUGAR
-                        </a>
 
-                        <a
-                            class="btn code"
-                            href="https://github.com/Jammy-QRA/Jammy_game_dev_repository/tree/main/games/06-ministerio-del-invierno"
-                            target="_blank"
-                        >
-                            💻 CÓDIGO
-                        </a>
+<a class="btn code"
+href="https://github.com/Jammy-QRA/Jammy_game_dev_repository/tree/main/games/03-tinder-trash"
+target="_blank">
+💻 CÓDIGO
+</a>
 
-                    </div>
 
-                </div>
+</div>
 
-            </article>
 
+</div>
 
-        </section>
 
-    </main>
+</article>
 
 
-    <footer>
 
-        <p>
-            🎮 Jammy Game Development Portfolio
-        </p>
 
-        <p>
-            Creado con HTML, CSS y JavaScript
-        </p>
 
-    </footer>
+<!-- DETRAS DEL MURO -->
+
+
+<article class="game">
+
+
+<img class="game-image"
+src="games/04-detras-del-muro/assets/screenshots/detras%20del%20muro%20inicio.png">
+
+
+<div class="game-content">
+
+
+<h3>🚪 Detrás del Muro</h3>
+
+
+<p>
+Una experiencia interactiva donde tendrás que descubrir qué existe detrás del muro.
+</p>
+
+
+<div class="buttons">
+
+
+<a class="btn play"
+href="games/04-detras-del-muro/project/detras-del-muro.html">
+🎮 JUGAR
+</a>
+
+
+<a class="btn code"
+href="https://github.com/Jammy-QRA/Jammy_game_dev_repository/tree/main/games/04-detras-del-muro"
+target="_blank">
+💻 CÓDIGO
+</a>
+
+
+</div>
+
+
+</div>
+
+
+</article>
+
+
+
+
+
+<!-- RETO GOTA -->
+
+
+<article class="game">
+
+
+<img class="game-image"
+src="games/05-reto-gota/assets/screenshots/reto%20gota%20inicio.png">
+
+
+
+<div class="game-content">
+
+
+<h3>💧 Reto Gota</h3>
+
+
+<p>
+Juego relacionado con el cuidado del agua y la resolución de retos.
+</p>
+
+
+<div class="buttons">
+
+
+<a class="btn play"
+href="games/05-reto-gota/project/reto-gota_mejorado.html">
+🎮 JUGAR
+</a>
+
+
+<a class="btn code"
+href="https://github.com/Jammy-QRA/Jammy_game_dev_repository/tree/main/games/05-reto-gota"
+target="_blank">
+💻 CÓDIGO
+</a>
+
+
+</div>
+
+
+</div>
+
+
+</article>
+
+
+
+
+
+<!-- MINISTERIO DEL INVIERNO -->
+
+
+<article class="game">
+
+
+<img class="game-image"
+src="games/06-ministerio-del-invierno/assets/screenshots/mdi%20inicio.png">
+
+
+<div class="game-content">
+
+
+<h3>❄️ Ministerio del Invierno</h3>
+
+
+<p>
+Aventura interactiva ambientada en un mundo invernal lleno de desafíos.
+</p>
+
+
+<div class="buttons">
+
+
+<a class="btn play"
+href="games/06-ministerio-del-invierno/project/ministerio_del_invierno.html">
+🎮 JUGAR
+</a>
+
+
+<a class="btn code"
+href="https://github.com/Jammy-QRA/Jammy_game_dev_repository/tree/main/games/06-ministerio-del-invierno"
+target="_blank">
+💻 CÓDIGO
+</a>
+
+
+</div>
+
+
+</div>
+
+
+</article>
+
+
+
+</section>
+
+
+
+</main>
+
+
+
+<footer>
+
+<p>🎮 Jammy Game Development Portfolio</p>
+
+<p>Creado con HTML, CSS y JavaScript</p>
+
+
+</footer>
+
+
 
 </body>
 </html>

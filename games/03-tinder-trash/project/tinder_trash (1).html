@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Tinder Trash ♻️</title>
+<style>
+  * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 0%, #0f3d2e, #08131a 70%);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  #game-container {
+    position: relative;
+    width: 480px;
+    height: 720px;
+    max-width: 96vw;
+    max-height: 96vh;
+    background: linear-gradient(180deg, #123c31, #0a2420 60%, #071a17);
+    border-radius: 18px;
+    box-shadow: 0 12px 45px rgba(0,0,0,0.55);
+    overflow: hidden;
+  }
+
+  #hud {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 6;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  #lives { font-size: 18px; letter-spacing: 3px; }
+  #hud-right { display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+  #score-tag { background: rgba(0,0,0,0.35); padding: 4px 10px; border-radius: 8px; }
+  #level-tag { font-size: 11px; opacity: 0.8; }
+
+  #board {
+    position: absolute;
+    top: 46px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: grid;
+    grid-template-rows: 1fr 1.3fr 1fr;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  #top-zones, #bottom-zones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .zone {
+    border-radius: 14px;
+    border: 3px dashed rgba(255,255,255,0.35);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    gap: 4px;
+    padding: 6px;
+    transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+  }
+
+  .zone .zone-emoji { font-size: 30px; }
+
+  .zone.organico { background: rgba(139, 94, 60, 0.28); }
+  .zone.plastico { background: rgba(255, 193, 7, 0.22); }
+  .zone.papel { background: rgba(33, 150, 243, 0.22); }
+  .zone.vidrio { background: rgba(76, 175, 80, 0.22); }
+
+  .zone.hover-active {
+    transform: scale(1.05);
+    border-color: #fff;
+  }
+
+  #middle-area {
+    position: relative;
+    height: 100%;
+    width: 100%;
+  }
+
+  #timer-ring {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    transform: rotate(-90deg);
+    pointer-events: none;
+  }
+
+  #timer-ring circle {
+    fill: none;
+    stroke-width: 6;
+  }
+
+  #timer-bg { stroke: rgba(255,255,255,0.15); }
+  #timer-fg {
+    stroke: #ffd166;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.05s linear, stroke 0.2s ease;
+  }
+
+  #card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 130px;
+    height: 130px;
+    background: linear-gradient(145deg, #ffffff, #e8f0ee);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    cursor: grab;
+    z-index: 5;
+    touch-action: none;
+  }
+
+  #card.dragging {
+    transition: none;
+    cursor: grabbing;
+  }
+
+  #card:active { cursor: grabbing; }
+
+  #card .card-emoji {
+    font-size: 52px;
+    line-height: 1;
+  }
+
+  #card .card-name {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #16342c;
+    font-weight: bold;
+    text-align: center;
+    padding: 0 8px;
+  }
+
+  #feedback {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    font-size: 22px;
+    font-weight: bold;
+    padding: 10px 22px;
+    border-radius: 14px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 8;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    text-align: center;
+    max-width: 80%;
+  }
+
+  #feedback.correct { background: rgba(76,175,80,0.9); }
+  #feedback.wrong { background: rgba(244,67,54,0.9); }
+  #feedback.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 12, 10, 0.94);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 26px;
+    z-index: 20;
+  }
+
+  .overlay h1 {
+    font-size: 28px;
+    margin: 0 0 10px;
+    background: linear-gradient(90deg, #4caf50, #8bc34a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .overlay p { font-size: 14px; line-height: 1.55; max-width: 340px; opacity: 0.92; margin: 6px 0; }
+
+  .rules {
+    text-align: left;
+    font-size: 13px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin: 10px 0;
+    max-width: 340px;
+  }
+  .rules li { margin-bottom: 6px; }
+
+  button {
+    margin-top: 16px;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(90deg, #4caf50, #2e7d32);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(76,175,80,0.4);
+    transition: transform 0.15s ease;
+  }
+  button:hover { transform: scale(1.05); }
+
+  #final-msg { font-size: 16px; margin-top: 6px; color: #ffd166; font-weight: bold; }
+  .final-score { font-size: 20px; margin-top: 4px; font-weight: bold; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+
+  <div id="hud">
+    <div id="lives">❤️❤️❤️</div>
+    <div id="hud-right">
+      <div id="score-tag">Puntos: 0</div>
+      <div id="level-tag">Nivel 1</div>
+    </div>
+  </div>
+
+  <div id="board">
+    <div id="top-zones">
+      <div class="zone organico" data-category="organico"><span class="zone-emoji">🍂</span>Orgánico</div>
+      <div class="zone plastico" data-category="plastico"><span class="zone-emoji">🧴</span>Plástico</div>
+    </div>
+
+    <div id="middle-area">
+      <svg id="timer-ring" viewBox="0 0 150 150">
+        <circle id="timer-bg" cx="75" cy="75" r="65"></circle>
+        <circle id="timer-fg" cx="75" cy="75" r="65"></circle>
+      </svg>
+      <div id="card">
+        <div class="card-emoji">🍌</div>
+        <div class="card-name">cáscara de plátano</div>
+      </div>
+      <div id="feedback"></div>
+    </div>
+
+    <div id="bottom-zones">
+      <div class="zone papel" data-category="papel"><span class="zone-emoji">📦</span>Papel / Cartón</div>
+      <div class="zone vidrio" data-category="vidrio"><span class="zone-emoji">🍾</span>Vidrio / Metal</div>
+    </div>
+  </div>
+
+  <div id="start-screen" class="overlay">
+    <h1>TINDER TRASH</h1>
+    <p>Arrastra cada tarjeta de basura hacia el contenedor correcto antes de que se acabe el tiempo.</p>
+    <div class="rules">
+      <ul>
+        <li>🕒 Tienes tiempo limitado por tarjeta. Si se acaba, pierdes una vida.</li>
+        <li>❌ Si sueltas la tarjeta en el contenedor equivocado, también pierdes una vida.</li>
+        <li>❤️ Tienes 3 vidas. Al perderlas todas, pierdes la partida.</li>
+        <li>⚡ Con el paso del tiempo el juego se pone más difícil: ¡menos tiempo por decisión!</li>
+        <li>🏆 Gana <b>200 puntos</b> clasificando correctamente para ganar el juego.</li>
+      </ul>
+    </div>
+    <button id="start-btn">Jugar</button>
+  </div>
+
+  <div id="lose-screen" class="overlay hidden">
+    <h1 style="background:linear-gradient(90deg,#ff5e5e,#ff9a3c);-webkit-background-clip:text;background-clip:text;color:transparent;">¡Te quedaste sin vidas!</h1>
+    <p>No pasa nada, reciclar bien es un hábito que se aprende con práctica. Sigue informándote sobre cómo clasificar tus residuos, ¡cada intento te acerca más a dominarlo! 🌱</p>
+    <div id="final-score-lose" class="final-score">Puntaje final: 0</div>
+    <button id="restart-lose-btn">Intentar de nuevo</button>
+  </div>
+
+  <div id="win-screen" class="overlay hidden">
+    <h1>¡Excelente trabajo!</h1>
+    <p>Alcanzaste el puntaje necesario clasificando la basura correctamente. ¡Tus decisiones ayudan de verdad al planeta! 🌎♻️</p>
+    <div id="final-msg">¡Eres un experto del reciclaje!</div>
+    <div id="final-score-win" class="final-score">Puntaje final: 0</div>
+    <button id="restart-win-btn">Jugar otra vez</button>
+  </div>
+
+</div>
+
+<script>
+// ---------- Datos ----------
+const items = [
+  { emoji: '🍌', name: 'cáscara de plátano', category: 'organico' },
+  { emoji: '🍎', name: 'restos de manzana', category: 'organico' },
+  { emoji: '🥚', name: 'cáscara de huevo', category: 'organico' },
+  { emoji: '☕', name: 'restos de café', category: 'organico' },
+  { emoji: '🍂', name: 'hojas secas', category: 'organico' },
+
+  { emoji: '🧴', name: 'botella de plástico', category: 'plastico' },
+  { emoji: '🥤', name: 'vaso desechable', category: 'plastico' },
+  { emoji: '🛍️', name: 'bolsa de plástico', category: 'plastico' },
+  { emoji: '🪥', name: 'cepillo de dientes', category: 'plastico' },
+  { emoji: '🧃', name: 'popote plástico', category: 'plastico' },
+
+  { emoji: '📦', name: 'caja de cartón', category: 'papel' },
+  { emoji: '📰', name: 'periódico viejo', category: 'papel' },
+  { emoji: '📄', name: 'hoja de papel', category: 'papel' },
+  { emoji: '✉️', name: 'sobre de papel', category: 'papel' },
+  { emoji: '🧻', name: 'tubo de cartón', category: 'papel' },
+
+  { emoji: '🍾', name: 'botella de vidrio', category: 'vidrio' },
+  { emoji: '🥫', name: 'lata de conservas', category: 'vidrio' },
+  { emoji: '🔩', name: 'tornillo metálico', category: 'vidrio' },
+  { emoji: '🍶', name: 'frasco de vidrio', category: 'vidrio' },
+  { emoji: '🪙', name: 'moneda vieja', category: 'vidrio' },
+];
+
+// ---------- Config ----------
+const WIN_SCORE = 200;
+const POINTS_PER_CORRECT = 20;
+const START_TIME_MS = 6000;
+const MIN_TIME_MS = 2000;
+const TIME_DECREASE_PER_LEVEL = 500;
+const CORRECT_TO_LEVEL_UP = 4;
+
+// ---------- Elementos ----------
+const card = document.getElementById('card');
+const cardEmoji = card.querySelector('.card-emoji');
+const cardName = card.querySelector('.card-name');
+const zones = document.querySelectorAll('.zone');
+const timerFg = document.getElementById('timer-fg');
+const feedback = document.getElementById('feedback');
+const livesEl = document.getElementById('lives');
+const scoreTag = document.getElementById('score-tag');
+const levelTag = document.getElementById('level-tag');
+
+const startScreen = document.getElementById('start-screen');
+const loseScreen = document.getElementById('lose-screen');
+const winScreen = document.getElementById('win-screen');
+const startBtn = document.getElementById('start-btn');
+const restartLoseBtn = document.getElementById('restart-lose-btn');
+const restartWinBtn = document.getElementById('restart-win-btn');
+
+const CIRC = 2 * Math.PI * 65;
+timerFg.style.strokeDasharray = CIRC;
+
+// ---------- Estado ----------
+let lives, score, level, correctStreak, currentItem, timeLimit, timeLeft, timerInterval, running;
+let dragging = false, offsetX = 0, offsetY = 0;
+
+function resetState() {
+  lives = 3;
+  score = 0;
+  level = 1;
+  correctStreak = 0;
+  timeLimit = START_TIME_MS;
+  running = true;
+  updateHUD();
+  nextCard();
+}
+
+function updateHUD() {
+  livesEl.textContent = '❤️'.repeat(Math.max(lives, 0)) + '🖤'.repeat(Math.max(3 - lives, 0));
+  scoreTag.textContent = 'Puntos: ' + score;
+  levelTag.textContent = 'Nivel ' + level;
+}
+
+// ---------- Tarjetas ----------
+function resetCardPosition() {
+  card.classList.remove('dragging');
+  card.style.transition = 'transform 0.18s ease';
+  card.style.left = '50%';
+  card.style.top = '50%';
+  card.style.transform = 'translate(-50%, -50%)';
+}
+
+function nextCard() {
+  currentItem = items[Math.floor(Math.random() * items.length)];
+  cardEmoji.textContent = currentItem.emoji;
+  cardName.textContent = currentItem.name;
+  resetCardPosition();
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = timeLimit;
+  timerFg.style.stroke = '#ffd166';
+  renderTimer();
+  const tickMs = 50;
+  timerInterval = setInterval(() => {
+    timeLeft -= tickMs;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      timeLeft = 0;
+      renderTimer();
+      onTimeout();
+      return;
+    }
+    renderTimer();
+  }, tickMs);
+}
+
+function renderTimer() {
+  const ratio = timeLeft / timeLimit;
+  timerFg.style.strokeDashoffset = CIRC * (1 - ratio);
+  timerFg.style.stroke = ratio < 0.3 ? '#ff5e5e' : (ratio < 0.6 ? '#ffd166' : '#8bc34a');
+}
+
+// ---------- Feedback ----------
+function showFeedback(text, type) {
+  feedback.textContent = text;
+  feedback.className = 'show ' + type;
+  setTimeout(() => { feedback.className = ''; }, 550);
+}
+
+function loseLife() {
+  lives--;
+  updateHUD();
+  if (lives <= 0) {
+    endGame(false);
+  }
+}
+
+function onTimeout() {
+  if (!running) return;
+  showFeedback('⏰ ¡Se acabó el tiempo!', 'wrong');
+  correctStreak = 0;
+  loseLife();
+  setTimeout(() => { if (running) nextCard(); }, 500);
+}
+
+function onCorrect() {
+  score += POINTS_PER_CORRECT;
+  correctStreak++;
+  updateHUD();
+  showFeedback('✅ ¡Correcto!', 'correct');
+  if (correctStreak % CORRECT_TO_LEVEL_UP === 0) {
+    levelUp();
+  }
+  if (score >= WIN_SCORE) {
+    setTimeout(() => endGame(true), 400);
+    return;
+  }
+  setTimeout(() => { if (running) nextCard(); }, 450);
+}
+
+function onWrong() {
+  correctStreak = 0;
+  showFeedback('❌ Contenedor equivocado', 'wrong');
+  loseLife();
+  setTimeout(() => { if (running) nextCard(); }, 500);
+}
+
+function levelUp() {
+  level++;
+  timeLimit = Math.max(MIN_TIME_MS, timeLimit - TIME_DECREASE_PER_LEVEL);
+  updateHUD();
+}
+
+function endGame(won) {
+  running = false;
+  clearInterval(timerInterval);
+  const scoreText = 'Puntaje final: ' + score;
+  if (won) {
+    document.getElementById('final-score-win').textContent = scoreText;
+    winScreen.classList.remove('hidden');
+  } else {
+    document.getElementById('final-score-lose').textContent = scoreText;
+    loseScreen.classList.remove('hidden');
+  }
+}
+
+// ---------- Drag & Drop ----------
+function getPoint(e) {
+  if (e.touches && e.touches[0]) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  if (e.changedTouches && e.changedTouches[0]) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+  return { x: e.clientX, y: e.clientY };
+}
+
+const middleArea = document.getElementById('middle-area');
+
+function onDragStart(e) {
+  if (!running || dragging) return;
+  clearInterval(timerInterval); // pausa el tiempo mientras arrastra
+  dragging = true;
+
+  const cardRect = card.getBoundingClientRect();
+  const areaRect = middleArea.getBoundingClientRect();
+  const p = getPoint(e);
+
+  // distancia del dedo/cursor a la esquina superior izquierda de la tarjeta
+  offsetX = p.x - cardRect.left;
+  offsetY = p.y - cardRect.top;
+
+  // fijar la tarjeta en su posición actual en px (relativa a middle-area) antes de mover
+  card.style.transform = 'none';
+  card.style.left = (cardRect.left - areaRect.left) + 'px';
+  card.style.top = (cardRect.top - areaRect.top) + 'px';
+  card.classList.add('dragging');
+  card.style.zIndex = 9;
+
+  e.preventDefault();
+}
+
+function onDragMove(e) {
+  if (!dragging) return;
+  const areaRect = middleArea.getBoundingClientRect();
+  const p = getPoint(e);
+
+  let x = p.x - areaRect.left - offsetX;
+  let y = p.y - areaRect.top - offsetY;
+  card.style.left = x + 'px';
+  card.style.top = y + 'px';
+
+  // resaltar zona bajo el cursor
+  let hoveredZone = null;
+  zones.forEach(z => {
+    const zr = z.getBoundingClientRect();
+    if (p.x > zr.left && p.x < zr.right && p.y > zr.top && p.y < zr.bottom) {
+      hoveredZone = z;
+    }
+  });
+  zones.forEach(z => z.classList.toggle('hover-active', z === hoveredZone));
+
+  e.preventDefault();
+}
+
+function onDragEnd(e) {
+  if (!dragging) return;
+  dragging = false;
+  card.classList.remove('dragging');
+  card.style.zIndex = '';
+
+  const p = getPoint(e);
+
+  let droppedZone = null;
+  zones.forEach(z => {
+    const zr = z.getBoundingClientRect();
+    if (p.x > zr.left && p.x < zr.right && p.y > zr.top && p.y < zr.bottom) {
+      droppedZone = z;
+    }
+    z.classList.remove('hover-active');
+  });
+
+  if (droppedZone) {
+    const category = droppedZone.dataset.category;
+    if (category === currentItem.category) {
+      onCorrect();
+    } else {
+      onWrong();
+    }
+  } else {
+    // no soltó en ninguna zona: la tarjeta vuelve al centro y se reanuda el tiempo restante
+    resetCardPosition();
+    resumeTimer();
+  }
+}
+
+function resumeTimer() {
+  if (!running) return;
+  const tickMs = 50;
+  renderTimer();
+  timerInterval = setInterval(() => {
+    timeLeft -= tickMs;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      timeLeft = 0;
+      renderTimer();
+      onTimeout();
+      return;
+    }
+    renderTimer();
+  }, tickMs);
+}
+
+card.addEventListener('mousedown', onDragStart);
+card.addEventListener('touchstart', onDragStart, { passive: false });
+document.addEventListener('mousemove', onDragMove);
+document.addEventListener('touchmove', onDragMove, { passive: false });
+document.addEventListener('mouseup', onDragEnd);
+document.addEventListener('touchend', onDragEnd);
+
+// ---------- Inicio / Reinicio ----------
+function startGame() {
+  startScreen.classList.add('hidden');
+  loseScreen.classList.add('hidden');
+  winScreen.classList.add('hidden');
+  resetState();
+}
+
+startBtn.addEventListener('click', startGame);
+restartLoseBtn.addEventListener('click', startGame);
+restartWinBtn.addEventListener('click', startGame);
+</script>
+</body>
+</html>

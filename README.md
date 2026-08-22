@@ -59,7 +59,7 @@ A lo largo de la partida debe responder correctamente **10 preguntas** de suma, 
 ## 🍎 02 — Comida al Toque
 
 <p align="center">
-  <img src="games/02-comida-al-toque/assets/screenshots/comida%al%toque%inicio.png" width="70%">
+ <img src="games/02-comida-al-toque/assets/screenshots/comida%20al%20toque%20jugabilidad.png" width="70%">
 </p>
 
 **Arcade / Educativo** · HTML5, CSS3, JavaScript

@@ -7,6 +7,10 @@
 
 <title>Jammy - Game Dev Portfolio</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
 
 *{
@@ -15,34 +19,87 @@
     box-sizing:border-box;
 }
 
+:root{
+    --bg:#ECE8FA;
+    --grid-line:#DED6F7;
+    --purple:#7C6EF2;
+    --purple-soft:#C6BDF5;
+    --pink:#FFC4E1;
+    --mint:#BDEFDA;
+    --yellow:#FFE79A;
+    --ink:#3A3654;
+    --ink-soft:#6E6690;
+    --white:#FFFFFF;
+}
+
 body{
-    font-family:Arial, sans-serif;
-    background:#111827;
-    color:white;
+    font-family:'Quicksand', sans-serif;
+    background-color:var(--bg);
+    background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:26px 26px;
+    color:var(--ink);
 }
 
 
 header{
 
     text-align:center;
-    padding:70px 20px;
-    background:linear-gradient(135deg,#7c3aed,#2563eb);
+    padding:80px 20px 60px;
+    background:linear-gradient(135deg,#A78BFA,#7FD8F0);
+    border-bottom:5px solid var(--purple);
+    position:relative;
+    overflow:hidden;
 
+}
+
+header::before{
+    content:'';
+    position:absolute;
+    top:18px;
+    left:24px;
+    width:13px;
+    height:13px;
+    border-radius:50%;
+    background:#FF8FAE;
+    box-shadow:
+        22px 0 0 var(--yellow),
+        44px 0 0 var(--mint);
+}
+
+header::after{
+    content:'✦ ˚ ✦ ˚ ✦ ˚ ✦ ˚ ✦ ˚ ✦ ˚ ✦ ˚ ✦ ˚ ✦ ˚ ✦';
+    position:absolute;
+    bottom:8px;
+    left:0;
+    right:0;
+    text-align:center;
+    font-size:12px;
+    letter-spacing:6px;
+    color:rgba(255,255,255,0.55);
+    white-space:nowrap;
+    overflow:hidden;
 }
 
 
 header h1{
 
-    font-size:45px;
-    margin-bottom:15px;
+    font-family:'Press Start 2P', 'Arial', sans-serif;
+    font-size:32px;
+    line-height:1.7;
+    margin-bottom:18px;
+    color:#FFFFFF;
+    text-shadow:3px 3px 0 rgba(58,54,84,0.35);
 
 }
 
 
 header p{
 
-    font-size:20px;
-    color:#e5e7eb;
+    font-size:17px;
+    font-weight:600;
+    color:#F5F3FF;
 
 }
 
@@ -52,7 +109,7 @@ header p{
 
     max-width:1100px;
     margin:auto;
-    padding:50px 20px;
+    padding:60px 20px;
 
 }
 
@@ -61,22 +118,25 @@ header p{
 .titulo{
 
     text-align:center;
-    margin-bottom:40px;
+    margin-bottom:50px;
 
 }
 
 
 .titulo h2{
 
-    font-size:32px;
+    font-family:'Press Start 2P', 'Arial', sans-serif;
+    font-size:22px;
+    color:var(--ink);
 
 }
 
 
 .titulo p{
 
-    color:#9ca3af;
-    margin-top:10px;
+    color:var(--ink-soft);
+    margin-top:14px;
+    font-weight:600;
 
 }
 
@@ -86,7 +146,7 @@ header p{
 
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:25px;
+    gap:30px;
 
 }
 
@@ -94,20 +154,38 @@ header p{
 
 .game{
 
-    background:#1f2937;
-    border-radius:15px;
+    background:var(--white);
+    border-radius:16px;
     overflow:hidden;
-    border:1px solid #374151;
-    transition:0.3s;
+    border:3px solid var(--purple-soft);
+    box-shadow:7px 7px 0 var(--purple-soft);
+    transition:0.2s ease;
+    outline:2px dashed transparent;
+    outline-offset:0px;
 
+}
+
+
+.game::before{
+    content:'';
+    display:block;
+    height:22px;
+    background-image:
+        radial-gradient(circle 4px at 12px 11px, #ffffff 99%, transparent 100%),
+        radial-gradient(circle 4px at 27px 11px, #ffffff 99%, transparent 100%),
+        radial-gradient(circle 4px at 42px 11px, #ffffff 99%, transparent 100%),
+        linear-gradient(90deg, var(--pink), var(--purple-soft));
+    border-bottom:2px solid var(--purple-soft);
 }
 
 
 
 .game:hover{
 
-    transform:translateY(-8px);
-    box-shadow:0 15px 30px rgba(0,0,0,0.4);
+    transform:translate(-4px,-4px);
+    box-shadow:11px 11px 0 var(--purple);
+    outline:2px dashed var(--ink);
+    outline-offset:5px;
 
 }
 
@@ -126,15 +204,23 @@ header p{
 
 .game-content{
 
-    padding:20px;
+    padding:22px 20px 24px;
 
 }
 
 
 .game-content h3{
 
-    font-size:22px;
-    margin-bottom:10px;
+    display:inline-block;
+    font-family:'Press Start 2P', 'Arial', sans-serif;
+    font-size:12px;
+    line-height:1.6;
+    color:var(--purple);
+    background:#EEEBFF;
+    border:2px solid var(--purple);
+    border-radius:20px;
+    padding:8px 16px;
+    margin-bottom:16px;
 
 }
 
@@ -142,9 +228,10 @@ header p{
 
 .game-content p{
 
-    color:#9ca3af;
-    line-height:1.5;
-    margin-bottom:20px;
+    color:var(--ink-soft);
+    font-weight:600;
+    line-height:1.6;
+    margin-bottom:22px;
 
 }
 
@@ -164,17 +251,31 @@ header p{
     flex:1;
     text-align:center;
     padding:12px;
-    border-radius:8px;
+    border-radius:10px;
     text-decoration:none;
-    font-weight:bold;
+    font-weight:700;
+    font-size:14px;
+    border:2px solid var(--ink);
+    box-shadow:3px 3px 0 var(--ink);
+    transition:0.15s ease;
 
+}
+
+.btn:hover{
+    transform:translate(-2px,-2px);
+    box-shadow:5px 5px 0 var(--ink);
+}
+
+.btn:active{
+    transform:translate(1px,1px);
+    box-shadow:1px 1px 0 var(--ink);
 }
 
 
 
 .play{
 
-    background:#7c3aed;
+    background:var(--purple);
     color:white;
 
 }
@@ -183,7 +284,7 @@ header p{
 
 .play:hover{
 
-    background:#6d28d9;
+    background:#6558E8;
 
 }
 
@@ -191,8 +292,8 @@ header p{
 
 .code{
 
-    background:#374151;
-    color:white;
+    background:var(--mint);
+    color:var(--ink);
 
 }
 
@@ -200,7 +301,7 @@ header p{
 
 .code:hover{
 
-    background:#4b5563;
+    background:#9DE6C4;
 
 }
 
@@ -209,11 +310,18 @@ header p{
 footer{
 
     text-align:center;
-    padding:30px;
-    margin-top:40px;
-    border-top:1px solid #374151;
-    color:#9ca3af;
+    padding:34px 20px;
+    margin-top:20px;
+    border-top:3px dashed var(--purple-soft);
+    color:var(--ink-soft);
+    font-weight:600;
 
+}
+
+footer p:first-child{
+    color:var(--ink);
+    font-weight:700;
+    margin-bottom:6px;
 }
 
 
@@ -358,6 +466,7 @@ src="games/03-tinder-trash/assets/screenshots/tinder%20trash%20inicio.png">
 
 
 <div class="game-content">
+
 
 <h3>🗑️ Tinder Trash</h3>
 

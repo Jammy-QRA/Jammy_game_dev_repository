@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Ministerio del Invierno</title>
+<style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: #1e293b;
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --accent-warn: #f59e0b;
+        }
+ 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+ 
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+ 
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background-color: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+ 
+        .hidden {
+            display: none !important;
+        }
+ 
+        h1, h2 {
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: var(--accent-blue);
+            text-align: center;
+        }
+ 
+        p {
+            margin-bottom: 15px;
+            line-height: 1.5;
+            color: var(--text-muted);
+        }
+ 
+        .status-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            font-size: 0.9em;
+        }
+ 
+        .status-item {
+            text-align: center;
+        }
+ 
+        .status-item span {
+            display: block;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: var(--text-main);
+            margin-top: 4px;
+        }
+ 
+        .document-card {
+            background: #0f172a;
+            border: 1px dashed var(--accent-blue);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+ 
+        .doc-field {
+            margin-bottom: 12px;
+            font-size: 1em;
+        }
+ 
+        .doc-field strong {
+            color: var(--accent-blue);
+        }
+ 
+        .timer-bar-container {
+            width: 100%;
+            height: 10px;
+            background: var(--border-color);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+ 
+        .timer-bar {
+            height: 100%;
+            width: 100%;
+            background: var(--accent-green);
+            transition: width 0.1s linear, background-color 0.3s;
+        }
+ 
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+ 
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1em;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: opacity 0.2s;
+        }
+ 
+        button:hover {
+            opacity: 0.85;
+        }
+ 
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+ 
+        .btn-approve { background: var(--accent-green); color: #000; }
+        .btn-deny { background: var(--accent-red); color: #fff; }
+        .btn-primary { background: var(--accent-blue); color: #000; width: 100%; }
+ 
+        .feedback {
+            text-align: center;
+            font-weight: bold;
+            min-height: 24px;
+            margin-bottom: 15px;
+        }
+ 
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+ 
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+ 
+        .checkbox-item label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+ 
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+ 
+        .alert {
+            color: var(--accent-red);
+            font-weight: bold;
+        }
+ 
+        .warning-text { color: var(--accent-warn); }
+</style>
+</head>
+<body>
+ 
+<div class="container">
+<!-- PANTALLA INICIAL -->
+<div id="screen-start">
+<h1>El Ministerio del Invierno</h1>
+<p>Eres un evaluador de créditos en una ciudad bajo crisis energética. Tu trabajo consiste en procesar las solicitudes de racionamiento de los ciudadanos.</p>
+<p><strong>REGLA DE TRABAJO:</strong> Solo aprueba si el <em>Monto Solicitado</em> es igual o inferior al <strong>30% del Ingreso Mensual</strong> del ciudadano.</p>
+<p>Cada acierto te otorga <strong>+$20</strong>. Cada error o tiempo agotado te penaliza con <strong>-$15</strong>. Deberás sobrevivir 5 días administrando tu dinero por las noches.</p>
+<button class="btn-primary" onclick="startGame()">Iniciar Turno</button>
+</div>
+ 
+    <!-- PANTALLA DE TRABAJO (DÍA) -->
+<div id="screen-day" class="hidden">
+<div class="status-bar">
+<div class="status-item">Día<span id="ui-day">1/5</span></div>
+<div class="status-item">Papeleo<span id="ui-doc-count">1/5</span></div>
+<div class="status-item">Sueldo Hoy<span id="ui-day-money">$0</span></div>
+</div>
+ 
+        <div class="timer-bar-container">
+<div id="ui-timer-bar" class="timer-bar"></div>
+</div>
+ 
+        <div class="document-card">
+<div class="doc-field"><strong>Ciudadano:</strong> <span id="doc-name">---</span></div>
+<div class="doc-field"><strong>Ingreso Mensual:</strong> $<span id="doc-income">0</span></div>
+<div class="doc-field"><strong>Monto Solicitado:</strong> $<span id="doc-requested">0</span></div>
+<hr style="border-color: var(--border-color); margin: 10px 0;">
+<div class="doc-field" style="font-size:0.85em; color: var(--text-muted);">
+                Límite permitido (30%): $<span id="doc-limit">0</span>
+</div>
+</div>
+ 
+        <div id="ui-feedback" class="feedback"></div>
+ 
+        <div class="btn-group">
+<button class="btn-deny" onclick="makeDecision(false)">Denegar</button>
+<button class="btn-approve" onclick="makeDecision(true)">Aprobar</button>
+</div>
+</div>
+ 
+    <!-- PANTALLA DE GESTIÓN (NOCHE) -->
+<div id="screen-night" class="hidden">
+<h2>Balance Nocturno</h2>
+<div class="status-bar">
+<div class="status-item">Fondo Acumulado<span id="ui-night-total-money">$0</span></div>
+<div class="status-item">Salud Familiar<span id="ui-night-health">100%</span></div>
+<div class="status-item">Avisos Embargo<span id="ui-night-warnings">0/3</span></div>
+</div>
+ 
+        <p>Selecciona los gastos que vas a pagar esta noche con tu dinero acumulado:</p>
+ 
+        <div class="checkbox-group">
+<div class="checkbox-item">
+<label for="chk-rent">
+<input type="checkbox" id="chk-rent" onchange="updateNightCalculation()">
+<span>Alquiler ($40) <small style="display:block; color:var(--text-muted)">Obligatorio. Si no pagas: +1 Aviso</small></span>
+</label>
+</div>
+<div class="checkbox-item">
+<label for="chk-heating">
+<input type="checkbox" id="chk-heating" onchange="updateNightCalculation()">
+<span>Calefacción ($25) <small style="display:block; color:var(--text-muted)">Si no pagas: -35% Salud Familiar</small></span>
+</label>
+</div>
+<div class="checkbox-item">
+<label for="chk-food">
+<input type="checkbox" id="chk-food" onchange="updateNightCalculation()">
+<span>Comida ($20) <small style="display:block; color:var(--text-muted)">Si no pagas: Tiempo más rápido mañana</small></span>
+</label>
+</div>
+</div>
+ 
+        <div style="margin-bottom:15px; text-align:right;">
+            Total a Pagar: <strong id="ui-night-cost">$0</strong> | Restante: <strong id="ui-night-remaining">$0</strong>
+</div>
+ 
+        <button id="btn-finish-night" class="btn-primary" onclick="finishNight()">Pagar y Dormir</button>
+</div>
+ 
+    <!-- PANTALLA DE RESULTADO (VICTORIA / DERROTA) -->
+<div id="screen-end" class="hidden">
+<h2 id="end-title">FIN DEL JUEGO</h2>
+<p id="end-message" style="text-align: center; font-size: 1.1em; margin: 20px 0;"></p>
+<button class="btn-primary" onclick="resetGame()">Intentar de Nuevo</button>
+</div>
+</div>
+ 
+<script>
+    // ESTADO DEL JUEGO
+    let state = {
+        day: 1,
+        docIndex: 0,
+        dayEarnings: 0,
+        totalMoney: 0,
+        health: 100,
+        warnings: 0,
+        isHungry: false,
+        currentDoc: null,
+        timer: null,
+        timeLeft: 10,
+        maxTime: 10
+    };
+ 
+    const NAMES = ["Ivan Petrov", "Elena Rostova", "Klaus Vance", "Sonia Meyer", "Yuri Volkov", "Marta Diaz", "Boris Becker", "Anna Karenina"];
+ 
+    function startGame() {
+        state.day = 1;
+        state.totalMoney = 0;
+        state.health = 100;
+        state.warnings = 0;
+        state.isHungry = false;
+        showScreen('screen-day');
+        startDayPhase();
+    }
+ 
+    function resetGame() {
+        showScreen('screen-start');
+    }
+ 
+    function startDayPhase() {
+        state.docIndex = 0;
+        state.dayEarnings = 0;
+        state.maxTime = state.isHungry ? 7.5 : 10;
+        updateDayUI();
+        loadNextDocument();
+    }
+ 
+    function generateDocument() {
+        const name = NAMES[Math.floor(Math.random() * NAMES.length)];
+        const income = (Math.floor(Math.random() * 16) + 5) * 100; // $500 - $2000
+        const maxAllowed = Math.floor(income * 0.30);
+        // 50% probabilidad de ser un documento válido
+        const isValid = Math.random() < 0.5;
+        let requested;
+        if (isValid) {
+            requested = Math.floor(Math.random() * (maxAllowed / 50)) * 50;
+            if (requested === 0) requested = 50;
+        } else {
+            requested = maxAllowed + (Math.floor(Math.random() * 6) + 1) * 50;
+        }
+ 
+        return { name, income, requested, maxAllowed, isValid };
+    }
+ 
+    function loadNextDocument() {
+        if (state.docIndex >= 5) {
+            endDayPhase();
+            return;
+        }
+ 
+        state.currentDoc = generateDocument();
+        state.docIndex++;
+        document.getElementById('doc-name').innerText = state.currentDoc.name;
+        document.getElementById('doc-income').innerText = state.currentDoc.income;
+        document.getElementById('doc-requested').innerText = state.currentDoc.requested;
+        document.getElementById('doc-limit').innerText = state.currentDoc.maxAllowed;
+        document.getElementById('ui-feedback').innerText = '';
+        updateDayUI();
+        startTimer();
+    }
+ 
+    function startTimer() {
+        clearInterval(state.timer);
+        state.timeLeft = state.maxTime;
+        const timerBar = document.getElementById('ui-timer-bar');
+        state.timer = setInterval(() => {
+            state.timeLeft -= 0.1;
+            const percentage = (state.timeLeft / state.maxTime) * 100;
+            timerBar.style.width = Math.max(0, percentage) + '%';
+            if (percentage < 30) {
+                timerBar.style.backgroundColor = 'var(--accent-red)';
+            } else {
+                timerBar.style.backgroundColor = 'var(--accent-green)';
+            }
+ 
+            if (state.timeLeft <= 0) {
+                clearInterval(state.timer);
+                processResult(false, true); // Tiempo agotado = error
+            }
+        }, 100);
+    }
+ 
+    function makeDecision(approved) {
+        clearInterval(state.timer);
+        const isCorrect = (approved === state.currentDoc.isValid);
+        processResult(isCorrect, false);
+    }
+ 
+    function processResult(isCorrect, isTimeout) {
+        const feedbackEl = document.getElementById('ui-feedback');
+        if (isTimeout) {
+            feedbackEl.innerText = "¡TIEMPO AGOTADO! (-$15)";
+            feedbackEl.className = "feedback alert";
+            state.dayEarnings -= 15;
+        } else if (isCorrect) {
+            feedbackEl.innerText = "¡CORRECTO! (+$20)";
+            feedbackEl.className = "feedback";
+            feedbackEl.style.color = "var(--accent-green)";
+            state.dayEarnings += 20;
+        } else {
+            feedbackEl.innerText = "¡ERROR DETECTADO! Multa (-$15)";
+            feedbackEl.className = "feedback alert";
+            state.dayEarnings -= 15;
+        }
+ 
+        updateDayUI();
+        // Bloquear temporalmente acción antes de cargar siguiente doc
+        setTimeout(loadNextDocument, 1000);
+    }
+ 
+    function updateDayUI() {
+        document.getElementById('ui-day').innerText = `${state.day}/5`;
+        document.getElementById('ui-doc-count').innerText = `${state.docIndex}/5`;
+        document.getElementById('ui-day-money').innerText = `$${state.dayEarnings}`;
+    }
+ 
+    function endDayPhase() {
+        state.totalMoney += state.dayEarnings;
+        if (state.totalMoney < 0) state.totalMoney = 0; // Prevenir fondos negativos acumulados
+        setupNightScreen();
+        showScreen('screen-night');
+    }
+ 
+    function setupNightScreen() {
+        document.getElementById('ui-night-total-money').innerText = `$${state.totalMoney}`;
+        document.getElementById('ui-night-health').innerText = `${state.health}%`;
+        document.getElementById('ui-night-warnings').innerText = `${state.warnings}/3`;
+ 
+        // Desmarcar checkboxes por defecto
+        document.getElementById('chk-rent').checked = false;
+        document.getElementById('chk-heating').checked = false;
+        document.getElementById('chk-food').checked = false;
+ 
+        updateNightCalculation();
+    }
+ 
+    function updateNightCalculation() {
+        const rentPaid = document.getElementById('chk-rent').checked;
+        const heatingPaid = document.getElementById('chk-heating').checked;
+        const foodPaid = document.getElementById('chk-food').checked;
+ 
+        let cost = 0;
+        if (rentPaid) cost += 40;
+        if (heatingPaid) cost += 25;
+        if (foodPaid) cost += 20;
+ 
+        const remaining = state.totalMoney - cost;
+        document.getElementById('ui-night-cost').innerText = `$${cost}`;
+        const remainingEl = document.getElementById('ui-night-remaining');
+        remainingEl.innerText = `$${remaining}`;
+ 
+        const finishBtn = document.getElementById('btn-finish-night');
+        if (remaining < 0) {
+            remainingEl.className = "alert";
+            finishBtn.disabled = true;
+        } else {
+            remainingEl.className = "";
+            finishBtn.disabled = false;
+        }
+    }
+ 
+    function finishNight() {
+        const rentPaid = document.getElementById('chk-rent').checked;
+        const heatingPaid = document.getElementById('chk-heating').checked;
+        const foodPaid = document.getElementById('chk-food').checked;
+ 
+        // Descontar dinero gastado
+        let cost = (rentPaid ? 40 : 0) + (heatingPaid ? 25 : 0) + (foodPaid ? 20 : 0);
+        state.totalMoney -= cost;
+ 
+        // Aplicar consecuencias
+        if (!rentPaid) state.warnings++;
+        if (!heatingPaid) state.health -= 35;
+        state.isHungry = !foodPaid;
+ 
+        // Verificar condiciones de Fin de Juego
+        if (state.warnings >= 3) {
+            triggerGameOver("Has sido EMBARGADO y despedido por acumular 3 avisos de impago de alquiler.");
+            return;
+        }
+        if (state.health <= 0) {
+            triggerGameOver("Tu familia ha ENFERMADO GRAVEMENTE debido al frío extremo de la vivienda.");
+            return;
+        }
+ 
+        if (state.day >= 5) {
+            triggerVictory();
+            return;
+        }
+ 
+        // Siguiente día
+        state.day++;
+        showScreen('screen-day');
+        startDayPhase();
+    }
+ 
+    function triggerGameOver(reason) {
+        document.getElementById('end-title').innerText = "DERROTA";
+        document.getElementById('end-title').style.color = "var(--accent-red)";
+        document.getElementById('end-message').innerText = reason;
+        showScreen('screen-end');
+    }
+ 
+    function triggerVictory() {
+        document.getElementById('end-title').innerText = "VICTORIA";
+        document.getElementById('end-title').style.color = "var(--accent-green)";
+        document.getElementById('end-message').innerText = `¡Has logrado sobrevivir los 5 días de trabajo! Pagaste tus deudas y mantuviste a tu familia con vida. Saldo final: $${state.totalMoney}`;
+        showScreen('screen-end');
+    }
+ 
+    function showScreen(screenId) {
+        document.getElementById('screen-start').classList.add('hidden');
+        document.getElementById('screen-day').classList.add('hidden');
+        document.getElementById('screen-night').classList.add('hidden');
+        document.getElementById('screen-end').classList.add('hidden');
+ 
+        document.getElementById(screenId).classList.remove('hidden');
+    }
+</script>
+</body>
+</html>

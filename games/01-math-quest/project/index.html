@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Quest - El Cristal del Conocimiento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="game-container">
+
+    <!-- HUD -->
+    <div id="hud">
+      <div id="hud-left">
+        <span class="hud-label">🏆 Puntaje:</span>
+        <span id="score-display">0</span> / 10
+      </div>
+      <div id="hud-center">
+        <span class="hud-label">🧩 Desafíos:</span>
+        <span id="progress-display">0</span> / 10
+      </div>
+      <div id="hud-right">
+        <span class="hud-label">💎 Cristal del Conocimiento</span>
+      </div>
+    </div>
+
+    <!-- Lienzo del juego -->
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+    <!-- Pantalla de inicio -->
+    <div id="start-screen" class="overlay">
+      <div class="panel">
+        <h1>⚔️ MATH QUEST ⚔️</h1>
+        <h2>El Cristal del Conocimiento</h2>
+        <p>
+          El malvado Contador de las Sombras robó el <strong>Cristal del Conocimiento</strong>
+          y lo escondió al final del Bosque de los Números.<br><br>
+          Ayuda a <strong>Alex</strong> a atravesar plataformas, saltar obstáculos y resolver
+          <strong>10 desafíos matemáticos</strong> (sumas, restas, multiplicaciones y divisiones)
+          para recuperarlo.
+        </p>
+        <div class="controls-info">
+          <p><strong>Controles:</strong></p>
+          <p>⬅️ ➡️ o A / D : Mover &nbsp;&nbsp;|&nbsp;&nbsp; ⬆️, W o ESPACIO : Saltar</p>
+        </div>
+        <button id="start-btn" class="game-btn">Comenzar Aventura</button>
+      </div>
+    </div>
+
+    <!-- Modal de pregunta -->
+    <div id="question-modal" class="overlay hidden">
+      <div class="panel question-panel">
+        <div id="question-zone-title">Desafío Matemático</div>
+        <div id="question-text">¿Cuánto es 2 + 2?</div>
+        <div id="options-container">
+          <button class="option-btn" data-index="0"></button>
+          <button class="option-btn" data-index="1"></button>
+          <button class="option-btn" data-index="2"></button>
+          <button class="option-btn" data-index="3"></button>
+        </div>
+        <div id="feedback-text"></div>
+      </div>
+    </div>
+
+    <!-- Mensaje flotante (falta responder / cristal bloqueado) -->
+    <div id="toast" class="hidden"></div>
+
+    <!-- Pantalla final -->
+    <div id="end-screen" class="overlay hidden">
+      <div class="panel">
+        <h1 id="end-title">💎 ¡Cristal Recuperado! 💎</h1>
+        <p id="end-score">Puntaje: 0 / 10</p>
+        <p id="end-message">Mensaje de desempeño</p>
+        <button id="restart-btn" class="game-btn">Volver a jugar</button>
+      </div>
+    </div>
+
+    <!-- Controles táctiles (móvil) -->
+    <div id="touch-controls">
+      <button id="btn-left" class="touch-btn">⬅️</button>
+      <button id="btn-jump" class="touch-btn">⬆️</button>
+      <button id="btn-right" class="touch-btn">➡️</button>
+    </div>
+
+  </div>
+
+<script src="script.js"></script>
+</body>
+</html>

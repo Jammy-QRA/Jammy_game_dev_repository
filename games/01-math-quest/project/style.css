@@ -1,0 +1,328 @@
+/* ======================================================
+   MATH QUEST - Estilos PIXEL ART
+   ====================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    repeating-linear-gradient(45deg, #0e1730 0 10px, #0b1224 10px 20px);
+  font-family: 'Trebuchet MS', 'Segoe UI', Arial, sans-serif;
+  color: #fff;
+  padding: 16px;
+  image-rendering: pixelated;
+}
+
+.pixel-font {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+}
+
+#game-container {
+  position: relative;
+  width: 800px;
+  max-width: 100%;
+}
+
+/* Sombra escalonada tipo pixel-art (reemplaza box-shadow difuso) */
+.pixel-border {
+  box-shadow:
+    0 4px 0 0 #000,
+    4px 0 0 0 #000,
+    0 -4px 0 0 #000,
+    -4px 0 0 0 #000;
+}
+
+/* ---------- HUD ---------- */
+#hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1c2540;
+  border: 4px solid #000;
+  border-bottom: 4px solid #f5c542;
+  border-radius: 0;
+  padding: 10px 14px;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.hud-label {
+  color: #f5c542;
+  margin-right: 6px;
+  text-shadow: 2px 2px 0 #000;
+}
+
+#score-display, #progress-display {
+  color: #7CFC91;
+  font-size: 12px;
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* ---------- Canvas ---------- */
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #87CEEB;
+  border: 4px solid #000;
+  border-radius: 0;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  cursor: default;
+}
+
+/* ---------- Overlays generales ---------- */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(6, 10, 26, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  z-index: 10;
+  padding: 12px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.panel {
+  background: #1c2540;
+  border: 4px solid #000;
+  outline: 3px solid #f5c542;
+  outline-offset: -10px;
+  border-radius: 0;
+  padding: 26px 24px;
+  max-width: 560px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 8px 8px 0 0 rgba(0,0,0,0.55);
+  image-rendering: pixelated;
+}
+
+.panel h1 {
+  margin: 0 0 14px;
+  color: #f5c542;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 18px;
+  line-height: 1.6;
+  text-shadow: 3px 3px 0 #6b4e00;
+}
+
+.panel h2 {
+  margin: 0 0 16px;
+  color: #7fd8ff;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.7;
+  text-shadow: 2px 2px 0 #04283a;
+}
+
+.panel p {
+  line-height: 1.6;
+  font-size: 14.5px;
+}
+
+.controls-info {
+  background: #131a30;
+  border: 2px solid #3a4870;
+  border-radius: 0;
+  padding: 10px 10px;
+  margin: 16px 0;
+  font-size: 13px;
+}
+
+.game-btn {
+  margin-top: 14px;
+  padding: 14px 22px;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 12px;
+  color: #1c2540;
+  background: #f5c542;
+  border: 3px solid #000;
+  border-radius: 0;
+  cursor: pointer;
+  box-shadow: 5px 5px 0 0 #000;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.game-btn:hover {
+  filter: brightness(1.08);
+}
+
+.game-btn:active {
+  transform: translate(5px, 5px);
+  box-shadow: 0 0 0 0 #000;
+}
+
+/* ---------- Modal de pregunta ---------- */
+.question-panel {
+  max-width: 520px;
+}
+
+#question-zone-title {
+  color: #7fd8ff;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+#question-text {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 20px;
+  color: #fff;
+  margin-bottom: 22px;
+  text-shadow: 2px 2px 0 #000;
+}
+
+#options-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.option-btn {
+  padding: 16px 8px;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 15px;
+  background: #2e3a59;
+  border: 3px solid #000;
+  outline: 2px solid #4d5d8a;
+  outline-offset: -6px;
+  color: #fff;
+  border-radius: 0;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 0 #000;
+  transition: background 0.1s, transform 0.08s, box-shadow 0.08s;
+}
+
+.option-btn:hover:not(:disabled) {
+  background: #3d4d78;
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 0 #000;
+}
+
+.option-btn:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 0 #000;
+}
+
+.option-btn:disabled {
+  cursor: default;
+}
+
+.option-btn.correct {
+  background: #2e7d32 !important;
+  outline-color: #7CFC91;
+}
+
+.option-btn.incorrect {
+  background: #a12b2b !important;
+  outline-color: #ff7a7a;
+}
+
+#feedback-text {
+  min-height: 30px;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+#feedback-text.correct-msg {
+  color: #7CFC91;
+  text-shadow: 2px 2px 0 #06340f;
+}
+
+#feedback-text.incorrect-msg {
+  color: #ff8a8a;
+  text-shadow: 2px 2px 0 #3a0a0a;
+}
+
+/* ---------- Toast ---------- */
+#toast {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f5c542;
+  color: #1c2540;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  padding: 12px 16px;
+  border: 3px solid #000;
+  border-radius: 0;
+  z-index: 20;
+  box-shadow: 5px 5px 0 0 #000;
+  animation: fadeInOut 2s ease forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, -10px); }
+  15% { opacity: 1; transform: translate(-50%, 0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -10px); }
+}
+
+/* ---------- Pantalla final ---------- */
+#end-score {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 15px;
+  color: #f5c542;
+  text-shadow: 2px 2px 0 #000;
+  margin-bottom: 12px;
+}
+
+#end-message {
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+/* ---------- Controles táctiles ---------- */
+#touch-controls {
+  display: none;
+  justify-content: space-between;
+  margin-top: 12px;
+  gap: 8px;
+}
+
+.touch-btn {
+  flex: 1;
+  padding: 18px 0;
+  font-size: 22px;
+  background: #1c2540;
+  border: 3px solid #000;
+  outline: 2px solid #f5c542;
+  outline-offset: -6px;
+  border-radius: 0;
+  color: #fff;
+  box-shadow: 4px 4px 0 0 #000;
+}
+
+.touch-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 0 #000;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  #touch-controls {
+    display: flex;
+  }
+}
